@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <!--
   ============================================================================
-  AVÍSPATEYA.CL — LANDING DE OFERTAS (archivo único, listo para Netlify)
+  AVÍSPATEYA.CL — LANDING DE OFERTAS (desplegado en Vercel)
   ============================================================================
 
-  CÓMO PUBLICARLO (recomendado: Netlify, no Replit):
-  1. Sube este archivo a un repositorio de GitHub como index.html.
-  2. En netlify.com → "Add new site" → "Import an existing project" → GitHub
-     → selecciona el repo. Netlify detecta que es HTML estático, no hay build
-     command que configurar → "Deploy site".
-  3. En Site settings → Domain management → Add custom domain → pon
-     avispateya.cl → agrega los registros DNS que te entrega Netlify en el
-     panel donde compraste el dominio.
-  4. Cada vez que edites este archivo en GitHub, Netlify redeploya solo.
-  5. El formulario de suscripción de abajo usa Netlify Forms — funciona apenas
-     subas el sitio a Netlify, sin backend ni servicio externo.
+  YA ESTÁ PUBLICADO EN VERCEL, conectado al repo de GitHub y con el dominio
+  avispateya.cl configurado. Cada vez que hagas commit/push en GitHub,
+  Vercel redeploya solo (Dashboard → Deployments para ver el progreso).
+
+  FORMULARIO DE SUSCRIPCIÓN: usa dos funciones serverless propias del
+  proyecto (/api/subscribe.js y /api/subscribers.js) que guardan los correos
+  en Vercel KV — no depende de Netlify Forms ni de ningún servicio externo.
+  Para que funcione necesitas, en el Dashboard de Vercel:
+  1. Storage → Create Database → KV (conecta la base de datos al proyecto;
+     esto agrega solo las variables KV_REST_API_URL y KV_REST_API_TOKEN).
+  2. Settings → Environment Variables → agrega ADMIN_KEY con una clave
+     secreta que inventes tú (para poder ver la lista de suscriptores en
+     /api/subscribers?key=TU_ADMIN_KEY).
+  3. Redeploy el proyecto una vez agregadas las variables (Deployments →
+     los tres puntos del último deploy → Redeploy).
+
+  DÓNDE PONER GOOGLE ADSENSE:
+  Busca el comentario "ADSENSE AQUÍ" más abajo en el <head>. AdSense primero
+  revisa tu sitio (necesita contenido propio real, política de privacidad y
+  términos — ya incluidos abajo) y luego te da un código para pegar ahí.
 
   ORIGEN DE LAS OFERTAS: AUTOMÁTICO vs MANUAL (léelo antes de prometerte magia):
   El plan es tener dos flujos de datos alimentando la misma grilla de productos:
@@ -32,12 +41,6 @@
   la prioridad es publicar volumen y variedad (aunque algunas ofertas por
   ahora no dejen comisión) para crecer tráfico primero y negociar acuerdos
   directos con tiendas más adelante.
-
-  DÓNDE PONER GOOGLE ADSENSE:
-  Busca el comentario "ADSENSE AQUÍ" más abajo en el <head>. AdSense primero
-  revisa tu sitio (necesita contenido propio real, política de privacidad y
-  términos — ya incluidos abajo) y luego te da un código para pegar ahí.
-
   ============================================================================
 -->
 <html lang="es">
@@ -342,13 +345,14 @@
       <span class="tag">NO TE PIERDAS NINGUNA OFERTA</span>
       <h2>Recibe las mejores bajadas de precio en tu correo</h2>
       <p>Un correo, máximo cada par de días. Sin spam, cancelas cuando quieras.</p>
-      <!-- Netlify Forms: al subir este archivo a Netlify, este formulario se
-           detecta automáticamente y aparece en Site → Forms, sin backend ni
-           servicio externo. El input hidden "form-name" es obligatorio para
-           que Netlify lo reconozca en el build estático. -->
-      <form class="subscribe__form" name="suscripcion" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="subscribeForm">
-        <input type="hidden" name="form-name" value="suscripcion">
-        <p style="display:none;"><label>No llenar: <input name="bot-field"></label></p>
+      <!-- Este formulario ya NO usa Netlify Forms (el sitio está en Vercel).
+           Envía los datos por fetch() a /api/subscribe, una función
+           serverless propia del proyecto (ver /api/subscribe.js) que guarda
+           el correo en Vercel KV. El campo "empresa" es un honeypot: los
+           humanos no lo ven ni lo llenan (está oculto por CSS), los bots sí
+           suelen llenarlo, así que si llega con contenido lo descartamos. -->
+      <form class="subscribe__form" id="subscribeForm">
+        <p style="position:absolute; left:-9999px;" aria-hidden="true"><label>Empresa: <input name="empresa" tabindex="-1" autocomplete="off"></label></p>
         <input type="email" name="email" placeholder="tu@correo.com" required>
         <button type="submit">Quiero ofertas →</button>
       </form>
@@ -481,25 +485,46 @@ searchInput.addEventListener('keydown', e => { if(e.key === 'Enter') render(); }
 renderHero();
 render();
 
-/* Envío del formulario de suscripción sin recargar la página (patrón
-   estándar de Netlify Forms vía fetch). Si por algo falla el fetch, el
-   formulario sigue funcionando igual con el POST normal del navegador. */
+/* Envío del formulario de suscripción a nuestra propia función serverless
+   en Vercel (/api/subscribe.js), que guarda el correo en Vercel KV. */
 const subscribeForm = document.getElementById('subscribeForm');
 const subscribeSuccess = document.getElementById('subscribeSuccess');
 if (subscribeForm) {
   subscribeForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const formData = new FormData(subscribeForm);
-    fetch('/', {
+    const submitBtn = subscribeForm.querySelector('button');
+    const email = subscribeForm.email.value.trim();
+    const honeypot = subscribeForm.empresa.value;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando…';
+    fetch('/api/subscribe', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData).toString()
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, empresa: honeypot })
     })
-      .then(() => {
-        subscribeForm.reset();
-        subscribeSuccess.classList.add('show');
+      .then((r) => r.json().catch(() => ({})).then((data) => ({ ok: r.ok, data })))
+      .then(({ ok, data }) => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Quiero ofertas →';
+        if (ok) {
+          subscribeForm.reset();
+          subscribeSuccess.textContent = data && data.alreadySubscribed
+            ? 'Ese correo ya estaba suscrito 🙂'
+            : '¡Listo! Ya estás suscrito — revisa tu correo.';
+          subscribeSuccess.classList.add('show');
+        } else {
+          subscribeSuccess.textContent = (data && data.error) || 'Hubo un problema, intenta de nuevo.';
+          subscribeSuccess.style.background = 'var(--urgency)';
+          subscribeSuccess.classList.add('show');
+        }
       })
-      .catch(() => { subscribeForm.submit(); });
+      .catch(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Quiero ofertas →';
+        subscribeSuccess.textContent = 'Hubo un problema de conexión, intenta de nuevo.';
+        subscribeSuccess.style.background = 'var(--urgency)';
+        subscribeSuccess.classList.add('show');
+      });
   });
 }
 </script>
