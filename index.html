@@ -146,9 +146,9 @@
     <div class="logo">Avíspate<span class="dot">Ya</span></div>
     <div class="search">
       <input type="text" id="searchInput" placeholder="Busca tecnología, hogar, moda, viajes…">
-      <button onclick="document.getElementById('searchInput').value = ''; renderOffers();">Buscar</button>
+      <button type="button" onclick="clearSearch()">Limpiar</button>
     </div>
-    <div class="header__cta">Ver todas las ofertas →</div>
+    <div class="header__cta"><a href="#section-chile" style="color:inherit; text-decoration:none;">Ver todas las ofertas →</a></div>
   </div>
 </header>
 
@@ -174,14 +174,14 @@
 </section>
 
 <nav class="cats">
-  <button class="active" onclick="filterOffers('all')">Todas</button>
-  <button onclick="filterOffers('tech')">Tecnología</button>
-  <button onclick="filterOffers('hogar')">Hogar</button>
-  <button onclick="filterOffers('moda')">Moda</button>
-  <button onclick="filterOffers('viajes')">Viajes</button>
-  <button onclick="filterOffers('juguetes')">Juguetes</button>
-  <button onclick="filterOffers('deporte')">Deporte</button>
-  <button onclick="filterOffers('internacional')">Internacional</button>
+  <button class="active" onclick="filterOffers(event, 'all')">Todas</button>
+  <button onclick="filterOffers(event, 'tech')">Tecnología</button>
+  <button onclick="filterOffers(event, 'hogar')">Hogar</button>
+  <button onclick="filterOffers(event, 'moda')">Moda</button>
+  <button onclick="filterOffers(event, 'viajes')">Viajes</button>
+  <button onclick="filterOffers(event, 'juguetes')">Juguetes</button>
+  <button onclick="filterOffers(event, 'deporte')">Deporte</button>
+  <button onclick="filterOffers(event, 'internacional')">Internacional</button>
 </nav>
 
 <!-- OFERTAS EN CHILE -->
@@ -240,9 +240,9 @@
     </div>
     <div>
       <h4>LEGAL</h4>
-      <a href="#" style="display:block; margin:8px 0; opacity:.8;">Política de privacidad</a>
-      <a href="#" style="display:block; margin:8px 0; opacity:.8;">Términos de uso</a>
-      <a href="#" style="display:block; margin:8px 0; opacity:.8;">Contacto</a>
+      <a href="/privacidad.html" style="display:block; margin:8px 0; opacity:.8;">Política de privacidad</a>
+      <a href="/terminos.html" style="display:block; margin:8px 0; opacity:.8;">Términos de uso</a>
+      <a href="mailto:contacto@avispateya.cl" style="display:block; margin:8px 0; opacity:.8;">Contacto</a>
     </div>
   </div>
   <div class="disclosure">
@@ -282,13 +282,24 @@ async function loadAutoOffers() {
   }
 }
 
+function getSearchTerm() {
+  return document.getElementById('searchInput').value.trim().toLowerCase();
+}
+
 function renderOffers() {
+  const searchTerm = getSearchTerm();
+  filteredOffers = allOffers.filter((o) => {
+    const matchesCategory = currentFilter === 'all' ? true : currentFilter === 'internacional' ? o.country === 'internacional' : o.cat === currentFilter;
+    const matchesSearch = !searchTerm || [o.name, o.store, o.cat, o.meta].some(field => String(field || '').toLowerCase().includes(searchTerm));
+    return matchesCategory && matchesSearch;
+  });
+
   const chileOffers = filteredOffers.filter(o => o.country === 'chile');
   const intlOffers = filteredOffers.filter(o => o.country === 'internacional');
-  
+
   renderGrid('#grid-chile', chileOffers);
   renderGrid('#grid-intl', intlOffers);
-  
+
   document.getElementById('chile-count').textContent = `${chileOffers.length} ofertas`;
   document.getElementById('intl-count').textContent = `${intlOffers.length} ofertas`;
   document.getElementById('trust-auto').textContent = filteredOffers.filter(o => o.source === 'auto').length;
@@ -321,18 +332,15 @@ function renderGrid(selector, products) {
   `).join('');
 }
 
-function filterOffers(cat) {
+function filterOffers(event, cat) {
   currentFilter = cat;
   document.querySelectorAll('nav.cats button').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  if (cat === 'all') {
-    filteredOffers = allOffers;
-  } else if (cat === 'internacional') {
-    filteredOffers = allOffers.filter(o => o.country === 'internacional');
-  } else {
-    filteredOffers = allOffers.filter(o => o.cat === cat);
-  }
+  event.currentTarget.classList.add('active');
+  renderOffers();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
   renderOffers();
 }
 
