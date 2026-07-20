@@ -251,11 +251,8 @@
 </footer>
 
 <script>
-const PRODUCTS_CHILE = [
-  { cat:"tech", country:"chile", store:"Amazon", source:"auto", img:"https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=800&q=85", name:"Audífonos inalámbricos bass+ con estuche", old:"189.900", price:"109.900", off:"-42%", meta:"Envío gratis · 4.6★", link:"#", featured:false },
-  { cat:"moda", country:"chile", store:"Puma", source:"auto", img:"https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=800&q=85", name:"Mochila urbana unisex resistente al agua", old:"149.900", price:"78.100", off:"-48%", meta:"Envío gratis · 4.5★", link:"#", featured:true },
+const PRODUCTS_CHILE_MANUAL = [
   { cat:"hogar", country:"chile", store:"Falabella", source:"manual", img:"https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&q=85", name:"Freidora de aire digital 5.5L", old:"329.900", price:"199.900", off:"-39%", meta:"Últimas unidades", link:"#", featured:false },
-  { cat:"deporte", country:"chile", store:"New Balance", source:"auto", img:"https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=85", name:"Tenis running amortiguación media", old:"329.900", price:"164.900", off:"-50%", meta:"Tallas limitadas", link:"#", featured:false },
 ];
 
 const PRODUCTS_INTL = [
@@ -263,9 +260,27 @@ const PRODUCTS_INTL = [
   { cat:"moda", country:"internacional", store:"eBay", source:"auto", img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=85", name:"Zapatillas Nike Air Max premium", old:"USD 180", price:"USD 99", off:"-45%", meta:"Seller de confianza", link:"#", featured:false },
 ];
 
-let allOffers = [...PRODUCTS_CHILE, ...PRODUCTS_INTL];
+let allOffers = [...PRODUCTS_CHILE_MANUAL, ...PRODUCTS_INTL];
 let filteredOffers = allOffers;
 let currentFilter = 'all';
+
+// Trae las ofertas automáticas de Mercado Libre desde nuestra base de datos
+// (las actualiza el cron todos los días) y las agrega a las manuales.
+async function loadAutoOffers() {
+  try {
+    const res = await fetch('/api/offers');
+    const data = await res.json();
+    const autoOffers = data.offers || [];
+    allOffers = [...PRODUCTS_CHILE_MANUAL, ...autoOffers, ...PRODUCTS_INTL];
+    filteredOffers = currentFilter === 'all' ? allOffers :
+      currentFilter === 'internacional' ? allOffers.filter(o => o.country === 'internacional') :
+      allOffers.filter(o => o.cat === currentFilter);
+    renderOffers();
+  } catch (err) {
+    console.error('No se pudieron cargar ofertas automáticas:', err);
+    renderOffers();
+  }
+}
 
 function renderOffers() {
   const chileOffers = filteredOffers.filter(o => o.country === 'chile');
@@ -351,7 +366,7 @@ document.getElementById('subscribeForm').addEventListener('submit', async (e) =>
   }
 });
 
-renderOffers();
+loadAutoOffers();
 </script>
 
 </body>
