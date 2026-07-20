@@ -1,7 +1,11 @@
 // /api/subscribe.js
+import { rateLimit } from '../lib/rateLimit.js';
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req, res) {
+  if (!(await rateLimit(req, res))) return;
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Método no permitido' });

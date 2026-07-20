@@ -4,7 +4,11 @@
 // ofertas automáticas guardadas en KV por /api/cron/fetch-offers.js.
 // Devuelve un JSON con la lista de ofertas.
 
+import { rateLimit } from '../lib/rateLimit.js';
+
 export default async function handler(req, res) {
+  if (!(await rateLimit(req, res))) return;
+
   const KV_URL = process.env.KV_REST_API_URL;
   const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
