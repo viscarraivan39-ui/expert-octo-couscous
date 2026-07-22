@@ -138,6 +138,32 @@
     nav.cats{gap:6px;}
     nav.cats button{padding:6px 12px; font-size:12px;}
   }
+
+  .help{position:fixed; right:20px; bottom:20px; z-index:80;}
+  .help__toggle{width:56px; height:56px; border-radius:50%; border:2px solid var(--ink); background:linear-gradient(135deg, var(--urgency), var(--urgency-deep)); color:#fff; font-size:24px; cursor:pointer; box-shadow:3px 3px 0 var(--ink); transition:transform .15s ease;}
+  .help__toggle:hover{transform:scale(1.06);}
+  .help__toggle:focus-visible, .help__panel button:focus-visible, .help__panel input:focus-visible{outline:3px solid var(--trust); outline-offset:2px;}
+  .help__panel{position:fixed; right:20px; bottom:88px; width:min(340px, calc(100vw - 40px)); max-height:min(520px, calc(100vh - 130px)); display:none; flex-direction:column; background:var(--paper); border:2px solid var(--ink); border-radius:var(--radius); box-shadow:5px 5px 0 var(--ink); overflow:hidden;}
+  .help__panel.open{display:flex;}
+  .help__head{background:var(--ink); color:var(--paper); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .help__head strong{font-family:'Archivo Black', sans-serif; font-size:14px;}
+  .help__head span{font-size:11px; opacity:.7; font-family:'JetBrains Mono', monospace;}
+  .help__close{background:transparent; border:0; color:var(--paper); font-size:18px; cursor:pointer; line-height:1; padding:4px;}
+  .help__body{flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; background:#fff;}
+  .help__msg{max-width:88%; font-size:13.5px; line-height:1.45; padding:9px 12px; border-radius:10px; border:1.5px solid var(--ink);}
+  .help__msg--bot{align-self:flex-start; background:var(--paper-2);}
+  .help__msg--user{align-self:flex-end; background:var(--trust); color:#fff; border-color:var(--trust-deep);}
+  .help__chips{display:flex; flex-wrap:wrap; gap:6px; align-self:flex-start; max-width:100%;}
+  .help__chip{font-size:11.5px; font-family:'JetBrains Mono', monospace; border:1.5px solid var(--ink); background:#fff; padding:5px 10px; border-radius:999px; cursor:pointer; transition:all .15s ease;}
+  .help__chip:hover{background:var(--ink); color:var(--paper);}
+  .help__product{align-self:flex-start; display:flex; gap:8px; border:1.5px solid var(--ink); border-radius:8px; padding:7px; background:var(--paper-2); max-width:92%;}
+  .help__product img{width:44px; height:44px; object-fit:cover; border-radius:6px; flex-shrink:0;}
+  .help__product div{display:flex; flex-direction:column; gap:2px; min-width:0;}
+  .help__product .name{font-size:11.5px; font-weight:700; line-height:1.25; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical;}
+  .help__product .price{font-family:'Archivo Black', sans-serif; font-size:13px; color:var(--savings-deep);}
+  .help__form{display:flex; gap:8px; padding:12px; border-top:1.5px solid var(--line); background:var(--paper);}
+  .help__form input{flex:1; border:2px solid var(--ink); border-radius:999px; padding:9px 14px; font-family:'Space Grotesk', sans-serif; font-size:13px; outline:0;}
+  .help__form button{border:0; background:var(--ink); color:var(--paper); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:15px; flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -314,6 +340,25 @@
     ¿Tienes una tienda y quieres que tus ofertas aparezcan aquí? Escríbenos a contacto@avispateya.cl. Los precios y la disponibilidad pueden cambiar en cualquier momento; verifica el precio final en la tienda antes de pagar.
   </div>
 </footer>
+
+<!-- AGENTE DE AYUDA -->
+<div class="help">
+  <button type="button" class="help__toggle" id="helpToggle" aria-label="Abrir ayuda" aria-expanded="false">💬</button>
+  <div class="help__panel" id="helpPanel" role="dialog" aria-label="Asistente de AvíspateYa">
+    <div class="help__head">
+      <div>
+        <strong>Asistente AvíspateYa</strong><br>
+        <span>Respuestas automáticas</span>
+      </div>
+      <button type="button" class="help__close" id="helpClose" aria-label="Cerrar ayuda">✕</button>
+    </div>
+    <div class="help__body" id="helpBody"></div>
+    <form class="help__form" id="helpForm">
+      <input type="text" id="helpInput" placeholder="Escribe tu pregunta…" autocomplete="off">
+      <button type="submit" aria-label="Enviar">➤</button>
+    </form>
+  </div>
+</div>
 
 <script>
 const PRODUCTS_CHILE_MANUAL = [
@@ -498,6 +543,194 @@ document.getElementById('subscribeForm').addEventListener('submit', async (e) =>
     btn.textContent = 'Quiero ofertas →';
   }
 });
+
+// --- Agente de ayuda (respuestas por reglas, sin IA ni costo) ---
+(function () {
+  const toggle = document.getElementById('helpToggle');
+  const panel = document.getElementById('helpPanel');
+  const closeBtn = document.getElementById('helpClose');
+  const body = document.getElementById('helpBody');
+  const form = document.getElementById('helpForm');
+  const input = document.getElementById('helpInput');
+
+  const QUICK_CHIPS = ['¿Cómo funciona?', 'Manual vs Auto', 'Ofertas internacionales', '¿Ganan comisión?', 'Buscar un producto'];
+
+  const ACCENT_MAP = { 'á':'a', 'é':'e', 'í':'i', 'ó':'o', 'ú':'u', 'ñ':'n', 'ü':'u' };
+  function stripAccents(s) {
+    return s.replace(/[áéíóúñü]/g, (ch) => ACCENT_MAP[ch]);
+  }
+
+  function addMessage(text, sender) {
+    const div = document.createElement('div');
+    div.className = `help__msg help__msg--${sender}`;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addChips(labels) {
+    const wrap = document.createElement('div');
+    wrap.className = 'help__chips';
+    labels.forEach(label => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'help__chip';
+      btn.textContent = label;
+      btn.addEventListener('click', () => handleMessage(label));
+      wrap.appendChild(btn);
+    });
+    body.appendChild(wrap);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function addProducts(products) {
+    products.forEach(p => {
+      const a = document.createElement('a');
+      a.href = p.link;
+      a.target = '_blank';
+      a.rel = 'noopener sponsored';
+      a.className = 'help__product';
+      a.innerHTML = `<img src="${p.img}" alt=""><div><span class="name">${p.name}</span><span class="price">$${p.price}</span></div>`;
+      body.appendChild(a);
+    });
+    body.scrollTop = body.scrollHeight;
+  }
+
+  const CATEGORY_WORDS = {
+    tech: ['tech', 'tecnologia', 'computador', 'notebook', 'celular'],
+    hogar: ['hogar', 'casa', 'cocina', 'electrodomestico'],
+    moda: ['moda', 'ropa', 'zapatilla'],
+    deporte: ['deporte', 'gym', 'ejercicio', 'fitness'],
+  };
+
+  const INTENTS = [
+    {
+      keywords: ['como funciona', 'que es esto', 'de que se trata', 'de que trata'],
+      reply: 'Rastreamos ofertas reales en Mercado Libre y las publicamos solo cuando el descuento es real — sin inflar el precio anterior para simular una rebaja más grande.',
+    },
+    {
+      keywords: ['manual', 'automatica', 'diferencia entre'],
+      reply: "\"Manual\" significa que alguien del equipo revisó y confirmó esa oferta a mano. \"Auto\" son ofertas que trae solo el sistema desde Mercado Libre. Las dos son reales, cambia solo quién la verificó.",
+    },
+    {
+      keywords: ['internacional', 'extranjero', 'afuera del pais', 'afuera de chile'],
+      reply: 'Las ofertas internacionales todavía no están disponibles — ¡vienen pronto! Por ahora todo el catálogo es de Mercado Libre Chile.',
+    },
+    {
+      keywords: ['comision', 'ganan plata', 'afiliado', 'les pagan', 'reciben dinero'],
+      reply: 'Sí: cuando comprás por un link de acá a veces ganamos una comisión de la tienda, y a vos no te cuesta nada extra. Elegimos qué mostrar según el descuento real, no según cuánto nos paguen.',
+    },
+    {
+      keywords: ['cada cuanto', 'frecuencia', 'se actualiza'],
+      reply: 'Las ofertas manuales se revisan cada 2-3 días, y las automáticas de Mercado Libre se actualizan solas todos los días.',
+    },
+    {
+      keywords: ['suscri', 'correo', 'notificacion', 'aviso'],
+      reply: "Podés suscribirte más abajo en \"Notificaciones de ofertas en tu correo\" — dejás tu email y avisamos cuando aparece algo bueno. Sin spam.",
+    },
+    {
+      keywords: ['contacto', 'hablar con alguien', 'soporte', 'reclamo'],
+      reply: 'Podés escribirnos directamente a contacto@avispateya.cl.',
+    },
+    {
+      keywords: ['gracias'],
+      reply: '¡De nada! Cualquier otra duda, acá estoy.',
+    },
+  ];
+
+  function findCategory(normalized) {
+    for (const [cat, words] of Object.entries(CATEGORY_WORDS)) {
+      if (words.some(w => normalized.includes(w))) return cat;
+    }
+    return null;
+  }
+
+  function searchProducts(normalized) {
+    const cat = findCategory(normalized);
+    const tokens = normalized.split(/\s+/).map(t => t.replace(/[^\p{L}\p{N}]/gu, '')).filter(t => t.length >= 4);
+    const pool = typeof allOffers !== 'undefined' ? allOffers : [];
+
+    let candidates = pool;
+    if (cat) candidates = candidates.filter(p => p.cat === cat);
+
+    if (tokens.length > 0) {
+      const scored = candidates
+        .map(p => {
+          const haystack = stripAccents(`${p.name} ${p.store} ${p.cat} ${p.meta}`.toLowerCase());
+          const score = tokens.filter(t => haystack.includes(t)).length;
+          return { p, score };
+        })
+        .filter(x => x.score > 0)
+        .sort((a, b) => b.score - a.score);
+      if (scored.length > 0) return scored.slice(0, 3).map(x => x.p);
+    }
+
+    if (cat) return candidates.slice(0, 3);
+    return [];
+  }
+
+  function handleMessage(rawText) {
+    const text = rawText.trim();
+    if (!text) return;
+    addMessage(text, 'user');
+
+    const normalized = stripAccents(text.toLowerCase());
+
+    if (/^(hola|buenas|hey|buen dia|buenos dias|buenas tardes)/.test(normalized)) {
+      addMessage('¡Hola! ¿En qué te ayudo?', 'bot');
+      addChips(QUICK_CHIPS);
+      return;
+    }
+
+    if (normalized === 'buscar un producto') {
+      addMessage('Contame qué buscás (por ejemplo: "notebook", "freidora", "zapatillas") y te muestro las ofertas que tengamos.', 'bot');
+      return;
+    }
+
+    const intent = INTENTS.find(i => i.keywords.some(k => normalized.includes(stripAccents(k))));
+    if (intent) {
+      addMessage(intent.reply, 'bot');
+      return;
+    }
+
+    const products = searchProducts(normalized);
+    if (products.length > 0) {
+      addMessage(products.length === 1 ? 'Encontré esta oferta:' : 'Encontré estas ofertas:', 'bot');
+      addProducts(products);
+      return;
+    }
+
+    addMessage('No encontré nada con eso. Probá con otra palabra, o usá el buscador de arriba de la página.', 'bot');
+  }
+
+  function openPanel() {
+    panel.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    if (body.childElementCount === 0) {
+      addMessage('¡Hola! Soy el asistente de AvíspateYa. Puedo responder dudas del sitio o ayudarte a encontrar una oferta.', 'bot');
+      addChips(QUICK_CHIPS);
+    }
+    input.focus();
+  }
+
+  function closePanel() {
+    panel.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  toggle.addEventListener('click', () => {
+    if (panel.classList.contains('open')) closePanel();
+    else openPanel();
+  });
+  closeBtn.addEventListener('click', closePanel);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value;
+    input.value = '';
+    handleMessage(text);
+  });
+})();
 
 loadAutoOffers();
 </script>
