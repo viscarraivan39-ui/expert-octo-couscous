@@ -370,7 +370,7 @@ function renderGrid(selector, products) {
           <span class="card__source card__source--${p.source}">${p.source === 'manual' ? 'Manual' : 'Auto'}</span>
           <span>${p.meta}</span>
         </div>
-        <button class="card__cta" onclick="${p.link === '#' ? \"event.preventDefault(); alert('Aún sin enlace de compra');\" : ''}">Ver oferta</button>
+        <button class="card__cta" onclick="${p.link === '#' ? "event.preventDefault(); alert('Aún sin enlace de compra');" : ''}">Ver oferta</button>
       </div>
     </a>
   `).join('');
