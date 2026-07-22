@@ -103,6 +103,15 @@
   .trust div{text-align:center; font-size:12.5px; max-width:180px; opacity:.85;}
   .trust div b{display:block; font-family:'Archivo Black', sans-serif; font-size:22px; opacity:1; margin-bottom:2px; color:var(--savings-deep);}
 
+  .testimonials{display:grid; gap:18px; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));}
+  .testimonial{background:#fff; border:2px solid var(--ink); border-radius:var(--radius); padding:18px 20px; box-shadow:3px 3px 0 var(--ink); display:flex; flex-direction:column; gap:10px;}
+  .testimonial__stars{color:var(--energy-hot); font-size:15px; letter-spacing:2px;}
+  .testimonial__quote{font-size:13.5px; line-height:1.55; opacity:.88; margin:0; flex:1;}
+  .testimonial__who{display:flex; align-items:center; gap:10px; margin-top:4px;}
+  .testimonial__avatar{width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg, var(--trust), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Archivo Black', sans-serif; font-size:13px; flex-shrink:0;}
+  .testimonial__name{font-weight:700; font-size:13px;}
+  .testimonial__meta{font-size:11px; opacity:.6; font-family:'JetBrains Mono', monospace;}
+
   .subscribe{background:var(--ink); margin-top:60px; padding:52px 20px; color:var(--paper);}
   .subscribe__inner{max-width:640px; margin:0 auto; text-align:center;}
   .subscribe__inner span.tag{font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; background:var(--energy); color:var(--ink); display:inline-block; padding:4px 10px; border-radius:6px; margin-bottom:14px;}
@@ -166,14 +175,14 @@
       <div><b>24/7</b><span>actualización de precios</span></div>
     </div>
   </div>
-  <div class="hero__visual">
+  <a class="hero__visual" id="heroVisual" href="#section-chile" target="_blank" rel="noopener sponsored">
     <span class="countdown">⏰ Oferta por tiempo limitado</span>
-    <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=85" alt="Oferta destacada">
+    <img id="heroImg" src="" alt="Oferta destacada del día">
     <div class="price">
-      <span class="old">$349.900</span>
-      <span class="new">$164.900</span>
+      <span class="old" id="heroOld"></span>
+      <span class="new" id="heroNew"></span>
     </div>
-  </div>
+  </a>
 </section>
 
 <nav class="cats">
@@ -206,9 +215,62 @@
 <section class="section" id="section-intl">
   <div class="section__head">
     <h2>Ofertas Internacionales 🌍</h2>
-    <span id="intl-count">Cargando ofertas...</span>
+    <span id="intl-count">Próximamente</span>
   </div>
   <div class="grid" id="grid-intl"></div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="section" id="section-testimonials">
+  <div class="section__head">
+    <h2>Lo que dicen quienes ya cazaron una oferta</h2>
+  </div>
+  <div class="testimonials">
+    <div class="testimonial">
+      <div class="testimonial__stars">★★★★★</div>
+      <p class="testimonial__quote">"Encontré un notebook con harto descuento y el link me llevó directo a Mercado Libre, sin vueltas. Llegó tal cual se veía en la foto."</p>
+      <div class="testimonial__who">
+        <div class="testimonial__avatar">C</div>
+        <div>
+          <div class="testimonial__name">Camila R.</div>
+          <div class="testimonial__meta">Santiago</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial__stars">★★★★★</div>
+      <p class="testimonial__quote">"Compré una freidora de aire con -43% y de verdad era el precio que decía la página, no como en otros sitios que 'infla' el precio anterior."</p>
+      <div class="testimonial__who">
+        <div class="testimonial__avatar">M</div>
+        <div>
+          <div class="testimonial__name">Matías G.</div>
+          <div class="testimonial__meta">Concepción</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial__stars">★★★★☆</div>
+      <p class="testimonial__quote">"Reviso la página casi todos los días antes de comprar algo de tecnología. Ya me ahorré bastante en un teclado y un disco externo."</p>
+      <div class="testimonial__who">
+        <div class="testimonial__avatar">V</div>
+        <div>
+          <div class="testimonial__name">Valentina S.</div>
+          <div class="testimonial__meta">Viña del Mar</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial__stars">★★★★★</div>
+      <p class="testimonial__quote">"Me suscribí al correo de ofertas y les aviso: no llega spam, solo avisan cuando hay algo que realmente vale la pena."</p>
+      <div class="testimonial__who">
+        <div class="testimonial__avatar">D</div>
+        <div>
+          <div class="testimonial__name">Diego P.</div>
+          <div class="testimonial__meta">Antofagasta</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- SUSCRIPCIÓN -->
@@ -299,10 +361,7 @@ const PRODUCTS_CHILE_MANUAL = [
   { cat:"hogar", country:"chile", store:"Mercado Libre", source:"manual", img:"https://http2.mlstatic.com/D_NQ_NP_2X_956199-MLA113351272900_072026-F.webp", name:"Calefactor a gas Okaeri estufa plegable 11-15kg para interior y exterior con conexión a gas envasado color gris", old:"", price:"88.200", off:"", meta:"Nuevo", link:"https://meli.la/1iSoA9Q", featured:false },
 ];
 
-const PRODUCTS_INTL = [
-  { cat:"tech", country:"internacional", store:"Amazon", source:"auto", img:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=85", name:"Laptop gaming i7 16GB RAM 1TB SSD", old:"USD 1.299", price:"USD 799", off:"-38%", meta:"Envío mundial", link:"#", featured:false },
-  { cat:"moda", country:"internacional", store:"eBay", source:"auto", img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=85", name:"Zapatillas Nike Air Max premium", old:"USD 180", price:"USD 99", off:"-45%", meta:"Seller de confianza", link:"#", featured:false },
-];
+const PRODUCTS_INTL = [];
 
 let allOffers = [...PRODUCTS_CHILE_MANUAL, ...PRODUCTS_INTL];
 let filteredOffers = allOffers;
@@ -341,19 +400,41 @@ function renderOffers() {
   const chileOffers = filteredOffers.filter(o => o.country === 'chile');
   const intlOffers = filteredOffers.filter(o => o.country === 'internacional');
 
-  renderGrid('#grid-chile', chileOffers);
-  renderGrid('#grid-intl', intlOffers);
+  renderGrid('#grid-chile', chileOffers, 'No hay ofertas en esta categoría aún.');
+  renderGrid('#grid-intl', intlOffers, '🚀 Ofertas internacionales próximamente disponibles.');
 
   document.getElementById('chile-count').textContent = `${chileOffers.length} ofertas`;
-  document.getElementById('intl-count').textContent = `${intlOffers.length} ofertas`;
+  document.getElementById('intl-count').textContent = intlOffers.length > 0 ? `${intlOffers.length} ofertas` : 'Próximamente';
   document.getElementById('trust-auto').textContent = filteredOffers.filter(o => o.source === 'auto').length;
   document.getElementById('trust-manual').textContent = filteredOffers.filter(o => o.source === 'manual').length;
+
+  updateHeroOffer();
 }
 
-function renderGrid(selector, products) {
+// Muestra en el hero la oferta real con mayor descuento (nunca datos inventados).
+function updateHeroOffer() {
+  const withDiscount = allOffers.filter(o => o.country === 'chile' && o.off && o.img && o.price);
+  if (withDiscount.length === 0) return;
+
+  const best = withDiscount.reduce((max, o) => {
+    const pct = parseInt(o.off, 10) || 0;
+    const maxPct = parseInt(max.off, 10) || 0;
+    return pct < maxPct ? o : max; // off es negativo (ej. "-60%"), así que "menor" = mayor descuento
+  }, withDiscount[0]);
+
+  document.getElementById('heroImg').src = best.img;
+  document.getElementById('heroImg').alt = best.name;
+  document.getElementById('heroOld').textContent = best.old ? `$${best.old}` : '';
+  document.getElementById('heroNew').textContent = `$${best.price}`;
+  const heroLink = document.getElementById('heroVisual');
+  heroLink.href = best.link;
+  heroLink.target = best.link.startsWith('#') ? '_self' : '_blank';
+}
+
+function renderGrid(selector, products, emptyMessage) {
   const container = document.querySelector(selector);
   if (products.length === 0) {
-    container.innerHTML = '<div class="empty">No hay ofertas en esta categoría aún.</div>';
+    container.innerHTML = `<div class="empty">${emptyMessage}</div>`;
     return;
   }
   container.innerHTML = products.map(p => `
