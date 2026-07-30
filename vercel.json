@@ -3,6 +3,9 @@
     "path": "/api/cron/fetch-offers",
     "schedule": "0 13 * * *"
   }],
+  "functions": {
+    "api/cron/fetch-destacado.js": { "maxDuration": 30 }
+  },
   "headers": [
     {
       "source": "/(.*)",
