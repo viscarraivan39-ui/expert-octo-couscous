@@ -10,7 +10,7 @@ const ESTILO = "colorful comic book illustration style, bold outlines, flat vibr
 export const bloques = [
   {
     id: "gancho",
-    texto: "Pues sí, las visitas domiciliarias tienen su ciencia. De hecho, las considero el género de suspenso más subestimado que existe. Y eso que llevo casi diez años haciendo terreno.",
+    texto: "Pues sí, las visitas domiciliarias tienen su ciencia. De hecho, las considero el género de suspenso más subestimado que existe. Y eso que yo llevo casi diez años haciendo terreno.",
     tomas: [
       { imagenPrompt: `A cartoon woman with a clipboard confidently walking toward a house, professional outfit, suspenseful dramatic lighting, ${ESTILO}` },
       { imagenPrompt: `A cartoon dog with a mischievous grin watching from a window, ${ESTILO}` },
@@ -19,7 +19,7 @@ export const bloques = [
   },
   {
     id: "contexto",
-    texto: "Para que entiendan el contexto: esta era una visita de rutina, típica, para verificar la composición del grupo familiar antes de una postulación al subsidio de arriendo. Nada del otro mundo. La señora Nilda vive con su hijo mayor, el Cristian, que en ese tiempo tenía como veintiocho años y todavía no se independizaba — cosa que en Chile es más común que raro. Yo había coordinado la visita para las once de la mañana. Llegué puntual, como corresponde. Y ahí fue cuando empezó todo.",
+    texto: "A ver, para que entiendan el contexto: esta era una visita de rutina, típica, para verificar la composición del grupo familiar antes de una postulación al subsidio de arriendo. Nada del otro mundo. La señora Nilda vive con su hijo mayor, el Cristian, que en ese tiempo tenía como veintiocho años y todavía no se independizaba, cosa que en Chile es más común que raro, así que tampoco es que fuera un dato relevante para el informe, pero bueno, ahí queda. Yo había coordinado la visita para las once de la mañana. Llegué puntual, como corresponde. Y ahí fue cuando empezó todo.",
     tomas: [
       { imagenPrompt: `A cartoon small Chilean house with a garden, warm morning light, cozy neighborhood, ${ESTILO}` },
       { imagenPrompt: `A cartoon young man lounging lazily on a couch, sleepy expression, comedic style, ${ESTILO}` },
@@ -79,5 +79,8 @@ export const bloques = [
     texto: "Así que no, esa visita no salió como el manual lo indicaba. Pero el subsidio, para que sepan, sí se aprobó. Y la oferta de esa semana, también se aprovechó. Entra a AvíspateYa y aprovechá la tuya.",
     imagenPrompt: `A cartoon hand holding a smartphone showing a cheerful shopping website with a big discount badge, sparkles, ${ESTILO}`,
     keyword: null,
+    // Risa justo al remate del informe leído en tono formal (el punchline
+    // del bloque anterior) — prueba real del mecanismo de efectos de sonido.
+    efecto: { archivo: "risa_publico.wav", enSegundo: 0.2 },
   },
 ];

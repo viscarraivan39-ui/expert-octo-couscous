@@ -1,27 +1,40 @@
-# Efectos de sonido (risas, stingers cómicos)
+# Efectos de sonido (risas, ambientes)
 
-Poné acá archivos `.mp3` cortos (1-3 segundos) de efectos de sonido —
-risas, "ta-da", "record scratch", campanitas — para insertar en momentos
-puntuales de los cahuines (ej. justo después del remate/punchline).
+Archivos `.wav` cortos de Mixkit (gratis, sin atribución requerida, uso
+comercial permitido) para insertar en momentos puntuales de los cahuines.
 
-Esta carpeta está vacía a propósito, mismo criterio que `music/`: no asumir
-que hay archivos acá sin haberlos puesto y verificado la licencia.
+## Ya disponibles
 
-## Dónde conseguirlos gratis (uso comercial permitido)
+**Risas / aplausos** (para remates/punchlines):
+- `risa_publico.wav` — risa de público, la más genérica y usada
+- `risa_mujer.wav`, `risa_nino.wav`, `risa_nino2.wav`, `risa_nasal.wav`
+- `risa_cartoon.wav`, `risa_criatura.wav`, `risa_personaje.wav` — más
+  exageradas, para el estilo cómic
+- `aplausos_risas.wav`, `aplausos_risas_chico.wav` — con aplausos incluidos
 
-- **Mixkit** (mixkit.co/free-sound-effects/laugh/) — sin atribución
-  requerida, botón de descarga directa.
-- **Pixabay** (pixabay.com/sound-effects/search/laugh/) — misma licencia
-  permisiva que ya usamos para música.
-- **Uppbeat** (uppbeat.io/sfx/category/laughter/laugh-track) — pensado
-  específicamente para edición estilo sitcom/comedia.
+**Ambiente** (para escenas específicas, no solo remates):
+- `perros_ladrando.wav`, `gato_maullido.wav`, `gallo.wav`
+- `pajaros.wav`, `pajaritos.wav`, `lluvia.wav`
+- `lobo_aullando.wav`, `lobos_bosque.wav`, `criatura_espeluznante.wav` —
+  para momentos de tensión/drama en vez de comedia
 
-No pude descargarlos automáticamente porque estos sitios no exponen la URL
-del archivo sin hacer clic en el botón de descarga desde el navegador — hay
-que bajarlos a mano y ponerlos acá.
+## Uso en un guion
 
-## Nombres sugeridos (para que el guion los referencie fácil)
+```js
+{
+  id: "cta",
+  texto: "...",
+  imagenPrompt: "...",
+  efecto: { archivo: "risa_publico.wav", enSegundo: 0.2 },
+}
+```
 
-- `risa.mp3` — risa genérica, para después de un remate
-- `tada.mp3` — efecto de reveló algo
-- `dramatico.mp3` — stinger de tensión/drama para un giro
+`enSegundo` es el momento dentro de ESE bloque (no del video completo) en
+que arranca el efecto. Si el archivo no existe, el render sigue igual sin
+el efecto (no rompe nada).
+
+## Conseguir más
+
+- [Mixkit](https://mixkit.co/free-sound-effects/) — misma fuente de estos.
+- [Pixabay](https://pixabay.com/sound-effects/) — misma licencia permisiva
+  que ya usamos para música.
