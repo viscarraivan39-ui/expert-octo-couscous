@@ -52,18 +52,19 @@ const ANGULOS_SIN_ROSTRO = [
 const DIR = `assets/${GUION_ID}`;
 if (!existsSync(DIR)) mkdirSync(DIR, { recursive: true });
 
-async function generarAudio(bloque, intento = 0) {
+// Sintetiza una línea de texto con una voz específica — pieza base tanto
+// para el modo de un solo narrador como para diálogos multi-personaje.
+async function sintetizarLinea(texto, voz, path, intento = 0) {
   try {
     const tts = new MsEdgeTTS();
-    await tts.setMetadata(VOICE, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
-    const { audioStream } = await tts.toStream(bloque.texto, VOICE_OPTIONS);
+    await tts.setMetadata(voz, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    const { audioStream } = await tts.toStream(texto, VOICE_OPTIONS);
     const chunks = [];
     await new Promise((resolve, reject) => {
       audioStream.on("data", (c) => chunks.push(c));
       audioStream.on("end", resolve);
       audioStream.on("error", reject);
     });
-    const path = `${DIR}/${bloque.id}.mp3`;
     writeFileSync(path, Buffer.concat(chunks));
     return path;
   } catch (err) {
@@ -71,10 +72,45 @@ async function generarAudio(bloque, intento = 0) {
     // (corte transitorio) — reintentar, mismo patrón que descargarImagen.
     if (intento < 4) {
       await sleep(3000 * (intento + 1));
-      return generarAudio(bloque, intento + 1);
+      return sintetizarLinea(texto, voz, path, intento + 1);
     }
     throw err;
   }
+}
+
+async function generarAudio(bloque) {
+  return sintetizarLinea(bloque.texto, VOICE, `${DIR}/${bloque.id}.mp3`);
+}
+
+// Diálogo multi-personaje: bloque.dialogo = [{ texto, voz }, ...]. Cada línea
+// se sintetiza con su propia voz (ej. es-CL-LorenzoNeural para uno,
+// es-CL-CatalinaNeural para otro) y se concatenan en una sola pista. Devuelve
+// también el tiempo exacto (medido, no estimado) de cada línea, para que los
+// subtítulos calcen con la voz real y no con un promedio de palabras.
+async function generarAudioDialogo(bloque) {
+  const partes = [];
+  for (let i = 0; i < bloque.dialogo.length; i++) {
+    const linea = bloque.dialogo[i];
+    const nombreArchivo = `${bloque.id}_linea${i}.mp3`;
+    await sintetizarLinea(linea.texto, linea.voz || VOICE, `${DIR}/${nombreArchivo}`);
+    const dur = await duracionSegundos(`${DIR}/${nombreArchivo}`);
+    partes.push({ texto: linea.texto, nombreArchivo, duracion: dur });
+  }
+  const listName = `${bloque.id}_dialogo_list.txt`;
+  writeFileSync(`${DIR}/${listName}`, partes.map((p) => `file '${p.nombreArchivo}'`).join("\n"));
+  const salida = `${bloque.id}.mp3`;
+  await run("ffmpeg", [
+    "-y", "-f", "concat", "-safe", "0", "-i", listName,
+    "-c", "copy", salida,
+  ], { cwd: DIR });
+
+  let acumulado = 0;
+  const lineas = partes.map((p) => {
+    const inicio = acumulado;
+    acumulado += p.duracion;
+    return { texto: p.texto, inicio, fin: acumulado };
+  });
+  return { path: `${DIR}/${salida}`, lineas, duracionTotal: acumulado };
 }
 
 function createLimiter(limit) {
@@ -390,9 +426,23 @@ async function concatConCrossfade(clipPaths, duracionesPadded, outPath) {
 
 async function procesarBloque(bloque) {
   console.log(`   -> ${bloque.id}`);
-  let audioPath = await generarAudio(bloque);
-  const duracionHabla = await duracionSegundos(audioPath);
-  console.log(`      audio: ${duracionHabla.toFixed(2)}s`);
+
+  // Diálogo multi-personaje (bloque.dialogo) vs. narrador único (bloque.texto)
+  // — los subtítulos de diálogo usan el tiempo REAL medido por línea, no una
+  // estimación proporcional a palabras, porque cada línea tiene su propia
+  // síntesis y por lo tanto su propia duración real.
+  let audioPath, duracionHabla, lineasDialogo;
+  if (bloque.dialogo) {
+    const resultado = await generarAudioDialogo(bloque);
+    audioPath = resultado.path;
+    duracionHabla = resultado.duracionTotal;
+    lineasDialogo = resultado.lineas;
+    console.log(`      diálogo: ${bloque.dialogo.length} líneas, ${duracionHabla.toFixed(2)}s`);
+  } else {
+    audioPath = await generarAudio(bloque);
+    duracionHabla = await duracionSegundos(audioPath);
+    console.log(`      audio: ${duracionHabla.toFixed(2)}s`);
+  }
 
   const leadIn = bloque.id === "gancho" ? LEAD_IN_GANCHO : 0;
   if (leadIn > 0) {
@@ -468,7 +518,12 @@ async function procesarBloque(bloque) {
   await concatConCrossfade(subClipPaths, duracionesPadded, `${DIR}/${visualName}`);
 
   // Subtítulos (tercio inferior, por encima del cintillo web) + palabra de ruptura.
-  const subs = generarSubtitulos(bloque.texto, duracionHabla, leadIn);
+  // Diálogo: un generarSubtitulos por línea, con su propio offset (inicio real
+  // de esa línea + leadIn) — así el subtítulo de cada personaje calza con su
+  // propia voz, no con un promedio de todo el bloque.
+  const subs = lineasDialogo
+    ? lineasDialogo.flatMap((l) => generarSubtitulos(l.texto, l.fin - l.inicio, leadIn + l.inicio))
+    : generarSubtitulos(bloque.texto, duracionHabla, leadIn);
   const drawtexts = subs.map((s) =>
     `drawtext=fontfile='${FONT}':text='${esc(s.texto)}':fontcolor=white:fontsize=44:borderw=4:bordercolor=black@0.85:x=(w-text_w)/2:y=h-360:enable='between(t,${s.inicio.toFixed(2)},${s.fin.toFixed(2)})'`
   );
