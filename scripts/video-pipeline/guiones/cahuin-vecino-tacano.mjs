@@ -12,7 +12,7 @@ const ESTILO = "colorful comic book illustration style, bold outlines, flat vibr
 export const bloques = [
   {
     id: "gancho",
-    texto: "Pues mire, yo pensé que había visto todo en este pasaje, hasta que me tocó enterarme del cahuín del Rodrigo, el del 15. Y esto se lo cuento tal como me lo contaron a mí, con pelos y señales.",
+    texto: "El vecino más tacaño del pasaje apareció con una tele que ni él se explica cómo pagó. Y aquí está la explicación completa.",
     tomas: [
       { imagenPrompt: `Wide shot of a cheerful Chilean neighborhood street with colorful small houses, ${ESTILO}` },
       { imagenPrompt: `A woman with a mischievous grin peeking through a window curtain, big expressive eyes, ${ESTILO}` },
@@ -50,7 +50,7 @@ export const bloques = [
   },
   {
     id: "cta",
-    texto: "Así que ojo: si el vecino más tacaño del pasaje está gastando plata feliz, algo raro está pasando. Y ese algo raro se llama AvíspateYa — ofertas reales, todos los días. Entra a avispateya punto cl y mira vos mismo.",
+    texto: "Así que ojo: si el vecino más tacaño del pasaje está gastando plata feliz, algo raro está pasando. Y ese algo raro se llama AvíspateYa — ofertas reales, todos los días. Entra ahora y mira vos mismo.",
     imagenPrompt: `A cartoon hand holding a smartphone showing a cheerful shopping website, sparkles and stars around it, ${ESTILO}`,
     keyword: null,
   },

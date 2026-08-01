@@ -12,14 +12,38 @@ la mecánica técnica completa), adaptado a esta marca:
 - **Ofertas/producto** (ej. `notebook-hp.mjs`): fotorrealista, igual que
   GeekNoticias — precio real, comparativa, urgencia real (fluctuación de
   precios, nunca inventada).
-- **Cahuín/chisme** (ej. `cahuin-vecino-tacano.mjs`): **estilo cómic/dibujo
-  gracioso**, no fotorrealista. Personajes inventados y anónimos, la marca
-  se menciona orgánicamente dentro del relato (no como corte publicitario).
+- **Cahuín/chisme** (ej. `cahuin-vecino-tacano.mjs`, `cahuin-separacion.mjs`,
+  `cahuin-botota-fox.mjs`): **estilo cómic/dibujo gracioso**, no
+  fotorrealista. Personajes inventados y anónimos (o reales pero sin pedirle
+  a FLUX su rostro específico), la marca se menciona orgánicamente dentro
+  del relato (no como corte publicitario) — **2 menciones por video como
+  máximo** (ej. una a mitad de historia + CTA final). Se probó una versión
+  con la marca repetida en cada tramo ("muletilla") y el feedback real fue
+  que se sentía pesado — no repetir ese patrón.
   Descubrimiento importante: el estilo cómic **esquiva el filtro de
   contenido de FLUX** (que es estricto con rostros fotorrealistas, no con
   ilustración estilizada) — así que en este formato SÍ se pueden mostrar
   caras y expresiones exageradas de los personajes, algo que en el resto
   del pipeline (GeekNoticias, ofertas) no se puede hacer directamente.
+
+  **Fuente del chisme/contenido — sin encasillarse en un solo tipo, a
+  propósito.** Categorías válidas, todas mezclables:
+  - Inventado (vecinos ficticios, situaciones cotidianas)
+  - Farándula real (verificar la fuente antes, evitar temas trágicos/
+    sensibles — ver criterio en el propio guion de Botota Fox)
+  - Adaptado de los libretos ya escritos en `guiones-asistente-social/`
+  - Noticias del día (mismo `scripts/tendencias/obtenerTendencias.mjs` que
+    usa GeekNoticias para newsjacking)
+  - Fechas especiales / efemérides / días conmemorativos
+  - Eventos puntuales (estrenos, lanzamientos, competencias)
+  - Comentario de teleseries/dramas de TV en curso
+  - Reacciones/comentario a comedias o shows del momento
+
+  La variedad de fuente es la estrategia — no fijarse en un solo nicho o
+  tipo de historia. El hilo común entre todas: estilo cómic, marca mencionada
+  con moderación (máx. 2 veces), y verificar que el tono sea liviano antes
+  de convertir algo en contenido (mismo criterio en todas: no explotar
+  desgracias reales de nadie).
 
 ## Uso
 

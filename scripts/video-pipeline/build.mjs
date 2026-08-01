@@ -10,7 +10,7 @@ import { promisify } from "node:util";
 
 const run = promisify(execFile);
 const VOICE = "es-CL-CatalinaNeural"; // distinta de la de GeekNoticias (Lorenzo) a propósito
-const VOICE_OPTIONS = { rate: "+8%", pitch: "+3Hz" }; // más energía/ritmo de venta
+const VOICE_OPTIONS = { rate: "+16%", pitch: "+4Hz" }; // feedback real: "más dinámica, un poco más rápida"
 const W = 1080, H = 1920; // vertical 9:16
 const FPS = 30;
 const FONT = "C\\:/Windows/Fonts/arialbd.ttf";
@@ -97,6 +97,15 @@ const FLUX_URL = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-de
 // cuando el prompt real se bloquea repetidamente y no vale la pena tirar abajo
 // todo el render por eso — mejor una imagen genérica que cero imagen.
 const PROMPT_RESPALDO = "Empty stadium under dramatic lighting, photorealistic, vertical composition";
+// Si el prompt que falló era estilo cómic, el respaldo tiene que serlo
+// también — si no, la imagen genérica fotorrealista queda pegada en medio
+// de un video de dibujos animados y se nota muchísimo.
+const PROMPT_RESPALDO_COMIC = "A cheerful empty stage with spotlights, colorful comic book illustration style, bold outlines, flat vibrant colors, vertical composition";
+// Último recurso: ni siquiera el respaldo es 100% infalible (el filtro de
+// FLUX no es determinístico — el mismo prompt puede pasar una vez y
+// bloquearse otra) — sin personas ni escenas, imposible de asociar a nada.
+const PROMPT_RESPALDO_MINIMO = "Abstract colorful shapes and soft gradient background, no people, no text, vertical composition";
+const PROMPT_RESPALDO_MINIMO_COMIC = "Abstract colorful comic book style shapes and bold patterns, no people, no text, vertical composition";
 
 async function llamarFlux(prompt) {
   const seed = Math.floor(Math.random() * 1e9);
@@ -149,12 +158,20 @@ async function descargarImagen(prompt, path, intento = 0) {
     // transitorio de NVIDIA) cae al respaldo — mejor una imagen genérica que
     // tirar abajo todo el render de un video por una sola toma.
     console.log(`      ⚠ falla persistente (${err.message}), usando prompt de respaldo para ${path}`);
+    const esComic = /comic book illustration style/i.test(prompt);
     try {
-      const base64 = await llamarFlux(PROMPT_RESPALDO);
+      const base64 = await llamarFlux(esComic ? PROMPT_RESPALDO_COMIC : PROMPT_RESPALDO);
       writeFileSync(path, Buffer.from(base64, "base64"));
       return path;
     } catch (err2) {
-      throw err; // si hasta el respaldo falla, ahí sí propagar el error original
+      console.log(`      ⚠ hasta el respaldo falló, usando respaldo mínimo (abstracto) para ${path}`);
+      try {
+        const base64 = await llamarFlux(esComic ? PROMPT_RESPALDO_MINIMO_COMIC : PROMPT_RESPALDO_MINIMO);
+        writeFileSync(path, Buffer.from(base64, "base64"));
+        return path;
+      } catch (err3) {
+        throw err; // si hasta el respaldo mínimo falla, ahí sí propagar el error original
+      }
     }
   }
 }

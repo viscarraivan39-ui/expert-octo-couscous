@@ -43,7 +43,7 @@ export const bloques = [
   },
   {
     id: "cta",
-    texto: "Revisalo hoy en avispateya.cl — el precio que ves ahora no está garantizado para mañana. Link en el primer comentario.",
+    texto: "Revisalo hoy en AvíspateYa — el precio que ves ahora no está garantizado para mañana. Link en el primer comentario.",
     imagenPrompt: "Close-up of hands holding a smartphone showing a shopping website, blurred modern desk background, photorealistic vertical photo",
     keyword: null,
   },
