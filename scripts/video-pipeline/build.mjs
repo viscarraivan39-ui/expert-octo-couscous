@@ -296,6 +296,25 @@ async function agregarSilencioInicial(audioPath, segundos) {
   return outPath;
 }
 
+const SONIDOS_DIR = "sonidos";
+
+// Mezcla un efecto de sonido corto (risa, stinger) sobre la voz en un
+// segundo exacto, sin alargar la pista — el efecto sí puede sobrepasar el
+// final de la voz (queda igual, amix respeta la duración más larga).
+async function mezclarEfecto(audioPath, archivoEfecto, enSegundo) {
+  const outPath = audioPath.replace(/\.mp3$/, "_efecto.mp3");
+  await run("ffmpeg", [
+    "-y",
+    "-i", audioPath,
+    "-i", `${SONIDOS_DIR}/${archivoEfecto}`,
+    "-filter_complex",
+    `[1:a]adelay=${Math.round(enSegundo * 1000)}|${Math.round(enSegundo * 1000)}[fx];[0:a][fx]amix=inputs=2:duration=longest:dropout_transition=0[out]`,
+    "-map", "[out]",
+    outPath,
+  ]);
+  return outPath;
+}
+
 function esc(texto) {
   return texto
     .replace(/\\/g, "\\\\")
@@ -380,6 +399,14 @@ async function procesarBloque(bloque) {
     audioPath = await agregarSilencioInicial(audioPath, leadIn);
   }
   const duracion = duracionHabla + leadIn;
+
+  // Efecto de sonido puntual (risa, stinger) en un momento exacto del bloque
+  // — opcional, `bloque.efecto = { archivo: "risa.mp3", enSegundo: 2 }`.
+  if (bloque.efecto && existsSync(`${SONIDOS_DIR}/${bloque.efecto.archivo}`)) {
+    audioPath = await mezclarEfecto(audioPath, bloque.efecto.archivo, (leadIn + (bloque.efecto.enSegundo || 0)));
+  } else if (bloque.efecto) {
+    console.log(`      ⚠ efecto "${bloque.efecto.archivo}" no encontrado en sonidos/, se omite`);
+  }
 
   // Si el bloque trae "tomas" explícitas, esas mandan (una por sub-plano, en el
   // orden en que ocurren en el diálogo). Si no, se usa el modo viejo de una sola

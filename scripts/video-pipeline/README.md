@@ -4,8 +4,14 @@ Mismo motor que `geeknoticias/scripts/video-pipeline` (ver ese README para
 la mecánica técnica completa), adaptado a esta marca:
 
 - Voz: `es-CL-CatalinaNeural` (distinta de Lorenzo, la de GeekNoticias), con
-  `rate: +8%, pitch: +3Hz` para más energía.
-- Marca: logo + `avispateya.cl` en vez de geeknoticias.com.
+  `rate: +16%, pitch: +4Hz` para más energía (ajustado tras feedback real).
+- Marca: logo + `avispateya.cl` en vez de geeknoticias.com. Se dice
+  "AvíspateYa" en la narración, nunca "punto cl" hablado (sonaba cortado) —
+  el dominio completo queda solo en la marca de agua visual.
+- Efectos de sonido puntuales (risas, stingers): opcional por bloque,
+  `efecto: { archivo: "risa.mp3", enSegundo: 2 }` — busca el archivo en
+  `sonidos/` (carpeta vacía a propósito, ver `sonidos/README.md` para
+  fuentes gratis). Si no existe el archivo, se omite sin romper el render.
 
 ## Dos estilos de contenido, dos estilos visuales
 
