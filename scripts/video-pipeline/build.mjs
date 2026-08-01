@@ -28,7 +28,7 @@ if (!guionArg) {
   process.exit(1);
 }
 const guionPath = guionArg.startsWith(".") || guionArg.includes("/") ? guionArg : `./guiones/${guionArg}`;
-const { id: GUION_ID, bloques: BLOQUES } = await import(new URL(guionPath, import.meta.url));
+const { id: GUION_ID, bloques: BLOQUES, sinMarca: SIN_MARCA } = await import(new URL(guionPath, import.meta.url));
 
 const ANGULOS = [
   "wide establishing shot",
@@ -575,11 +575,17 @@ async function main() {
     "-c", "copy", "sinmarca.mp4",
   ], { cwd: DIR });
 
-  console.log(`3/5 — Aplicando marca de agua (logo + ${DOMINIO})...`);
-  await aplicarOverlaysDeMarca("sinmarca.mp4", "conmarca.mp4");
+  let previo = "sinmarca.mp4";
+  if (SIN_MARCA) {
+    console.log("3/5 — sinMarca=true en el guion, se omite el logo/marca de agua...");
+  } else {
+    console.log(`3/5 — Aplicando marca de agua (logo + ${DOMINIO})...`);
+    await aplicarOverlaysDeMarca("sinmarca.mp4", "conmarca.mp4");
+    previo = "conmarca.mp4";
+  }
 
   console.log("4/5 — Mezclando música de fondo...");
-  await mezclarMusica("conmarca.mp4", "final.mp4");
+  await mezclarMusica(previo, "final.mp4");
 
   const duracionTotal = await duracionSegundos(`${DIR}/final.mp4`);
   console.log(`5/5 — Video final listo en ${DIR}/final.mp4 — duración: ${duracionTotal.toFixed(1)}s (${(duracionTotal / 60).toFixed(2)} min)`);
