@@ -1,0 +1,195 @@
+{
+  "series": [
+    {
+      "titulo": "La Unión de las Avispas",
+      "slug": "la-uni-n-de-las-avispas",
+      "idea": "Una empleada humilde de Avispateya se casa por conveniencia con un hombre que resulta ser, en secreto, el dueño de toda la empresa y de la mansión familiar. Ella no lo sabe al principio. Con el tiempo empiezan sentimientos reales, pero hay otra familia (los Reina Abeja) que quiere quedarse con la herencia y hará lo posible por separarlos y exponer el matrimonio como una farsa.",
+      "sinopsis": "La historia sigue a Sofía, una empleada humilde de Avispateya, quien se casa por conveniencia con Avispón Fernández, el dueño secreto de la empresa. A medida que pasan los días, Sofía comienza a desarrollar sentimientos reales hacia Avispón, pero la familia Reina Abeja intenta separarlos y exponer su matrimonio como una farsa. Mientras tanto, Avispa Dorada, una empleada de confianza de Avispón, se convierte en la aliada de Sofía en su lucha por mantener su relación y descubrir la verdad sobre la herencia de Avispateya. Sin embargo, la situación se complica cuando se revela que Avispón tiene un hijo secreto con una mujer de la familia Reina Abeja, lo que pone en peligro su matrimonio y su legado. Al final, Sofía y Avispón deben tomar una decisión difícil para proteger su amor y la empresa que han construido juntos.",
+      "personajes": [
+        {
+          "nombre": "Sofía",
+          "rol": "Protagonista, empleada humilde de Avispateya",
+          "personalidad": "Diligente y leal"
+        },
+        {
+          "nombre": "Avispón Fernández",
+          "rol": "Dueño secreto de Avispateya y esposo de Sofía",
+          "personalidad": "Encantador y ambicioso"
+        },
+        {
+          "nombre": "Avispa Dorada",
+          "rol": "Empleada de confianza de Avispón y aliada de Sofía",
+          "personalidad": "Inteligente y astuta"
+        },
+        {
+          "nombre": "Reina Abeja",
+          "rol": "Matriarca de la familia Reina Abeja y rival de Avispón",
+          "personalidad": "Manipuladora y poderosa"
+        }
+      ],
+      "beats": [
+        {
+          "capitulos": "1-5",
+          "resumen": "Sofía y Avispón se casan por conveniencia y comienzan a conocerse"
+        },
+        {
+          "capitulos": "6-10",
+          "resumen": "Sofía descubre que Avispón es el dueño de Avispateya y comienza a desarrollar sentimientos hacia él"
+        },
+        {
+          "capitulos": "11-15",
+          "resumen": "La familia Reina Abeja comienza a interferir en la relación de Sofía y Avispón"
+        },
+        {
+          "capitulos": "16-20",
+          "resumen": "Avispa Dorada se convierte en la aliada de Sofía y juntas descubren un complot de la familia Reina Abeja"
+        },
+        {
+          "capitulos": "21-25",
+          "resumen": "Sofía y Avispón se acercan más y su relación se vuelve más íntima"
+        },
+        {
+          "capitulos": "26-30",
+          "resumen": "La familia Reina Abeja revela un secreto oscuro sobre el pasado de Avispón"
+        },
+        {
+          "capitulos": "31-35",
+          "resumen": "Sofía se siente traicionada por Avispón y comienza a cuestionar su matrimonio"
+        },
+        {
+          "capitulos": "36-40",
+          "resumen": "Avispón revela la verdad sobre su hijo secreto y su relación con la familia Reina Abeja"
+        },
+        {
+          "capitulos": "41-45",
+          "resumen": "Sofía y Avispón se enfrentan a una crisis en su relación y deben tomar una decisión difícil"
+        },
+        {
+          "capitulos": "46-50",
+          "resumen": "La familia Reina Abeja lanza un ataque final contra Avispón y Sofía"
+        },
+        {
+          "capitulos": "51-55",
+          "resumen": "Sofía y Avispón se unen para defender su amor y su legado"
+        },
+        {
+          "capitulos": "56-60",
+          "resumen": "La verdad sobre el pasado de Avispón y su relación con la familia Reina Abeja es revelada"
+        },
+        {
+          "capitulos": "61-65",
+          "resumen": "Sofía y Avispón deben enfrentar las consecuencias de sus decisiones y luchar por su futuro"
+        },
+        {
+          "capitulos": "66-70",
+          "resumen": "La familia Reina Abeja sufre una gran pérdida y su poder comienza a declinar"
+        },
+        {
+          "capitulos": "71-75",
+          "resumen": "Sofía y Avispón se preparan para un nuevo capítulo en sus vidas y deben decidir qué hacer con su futuro"
+        },
+        {
+          "capitulos": "76-80",
+          "resumen": "Sofía y Avispón toman una decisión final y se embarcan en un nuevo viaje juntos"
+        }
+      ],
+      "totalCapitulosPlan": 80,
+      "resumenAcumulado": "La historia sigue a Sofía, una empleada humilde, quien se casa por conveniencia con Avispón Fernández, el dueño secreto de la empresa. A medida que pasan los días, Sofía comienza a desarrollar sentimientos reales hacia Avispón. La familia Reina Abeja intenta separarlos y exponer su matrimonio como una farsa. Avispa Dorada se convierte en la aliada de Sofía en su lucha por mantener su relación y descubrir la verdad sobre la herencia de la empresa. Sofía y Avispón se casan y comienzan a conocerse, explorando los desafíos y las oportunidades que su relación les presenta. Reina Abeja descubre el comprobante de la transferencia bancaria que prueba que Sofía aceptó casarse con Avispón a cambio de dinero para pagar una deuda médica urgente de su madre. Reina Abeja confronta a Sofía y Avispón con el comprobante, amenazando con exponer su secreto. Avispón se enfrenta a Reina Abeja, defendiendo su relación con Sofía, y Reina Abeja revela que tiene una sorpresa adicional que cambiará todo.",
+      "vocesAsignadas": {
+        "Avispón Fernández": "es-US-Chirp3-HD-Fenrir",
+        "Avispa Dorada": "es-US-Chirp3-HD-Laomedeia",
+        "Reina Abeja": "es-US-Chirp3-HD-Zephyr",
+        "Sofía": "es-US-Chirp3-HD-Leda",
+        "Narrador": "es-US-Chirp3-HD-Puck"
+      },
+      "capitulos": [
+        {
+          "numero": 1,
+          "resumenCapitulo": "Sofía y Avispón Fernández se casan por conveniencia y comienzan a conocerse. Avispa Dorada se presenta como una aliada de Sofía en su lucha por mantener su relación y descubrir la verdad sobre la herencia de la empresa. La familia Reina Abeja comienza a sospechar que el matrimonio es una farsa.",
+          "cliffhangerCierre": "La familia Reina Abeja decide investigar más a fondo el pasado de Sofía para encontrar pruebas que demuestren que su matrimonio con Avispón Fernández es una farsa.",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep1",
+          "generadoEn": "2026-08-02T02:08:41.146Z",
+          "chequeoContinuidad": {
+            "ok": true,
+            "problemas": []
+          }
+        },
+        {
+          "numero": 2,
+          "resumenCapitulo": "La familia Reina Abeja comienza a investigar el pasado de Sofía, mientras que Avispón y Sofía siguen conociéndose y desarrollando sentimientos. Avispa Dorada se muestra como una aliada valiosa para Sofía. La situación se vuelve más tensa cuando se revela que la familia Reina Abeja está cerca de descubrir la verdad sobre el matrimonio.",
+          "cliffhangerCierre": "La investigación de la familia Reina Abeja sobre el pasado de Sofía está a punto de revelar un secreto que podría cambiar todo.",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep2",
+          "generadoEn": "2026-08-02T03:58:09.356Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente de la investigación de la familia Reina Abeja sobre el pasado de Sofía de manera concluyente",
+              "La familia Reina Abeja decide investigar, pero no se muestra el resultado o progreso significativo de esta investigación en el capítulo",
+              "No se presenta una contradicción directa en la personalidad o rol de los personajes, pero la falta de progreso en la trama de la investigación crea una sensación de estancamiento"
+            ]
+          }
+        },
+        {
+          "numero": 3,
+          "resumenCapitulo": "La investigación de la familia Reina Abeja sobre el pasado de Sofía revela un secreto que podría cambiar todo. Avispón y Sofía siguen conociéndose y explorando su relación. Avispa Dorada se convierte en una aliada clave para Sofía en su lucha por mantener su relación y descubrir la verdad sobre la herencia de la empresa.",
+          "cliffhangerCierre": "Reina Abeja tiene en sus manos el comprobante de la transferencia que demuestra que le pagó a Sofía por casarse con Avispón — la prueba concreta que necesitaba, y está a punto de usarla",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep3",
+          "generadoEn": "2026-08-02T21:59:42.725Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente de manera concreta, ya que no se revela claramente el secreto que podría cambiar todo.",
+              "La investigación de la familia Reina Abeja sobre el pasado de Sofía no se desarrolla de manera significativa en este capítulo.",
+              "La interacción entre los personajes y el desarrollo de la trama no contradice directamente la sinopsis o el resumen acumulado, pero no avanza de manera clara en relación con el cliffhanger."
+            ]
+          }
+        },
+        {
+          "numero": 4,
+          "resumenCapitulo": "Reina Abeja descubre la verdad sobre el matrimonio de Sofía y Avispón, y planea exponerlos. Mientras tanto, Sofía y Avispón siguen conociéndose y desarrollando sentimientos. La relación se vuelve más complicada cuando Reina Abeja amenaza con revelar el secreto.",
+          "cliffhangerCierre": "Reina Abeja está a punto de exponer el secreto del matrimonio de Sofía y Avispón a todos",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep4",
+          "generadoEn": "2026-08-02T22:01:32.653Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El cliffhanger pendiente se continúa pero no se resuelve de forma concluyente, ya que Reina Abeja no utiliza la prueba para exponer el matrimonio como se esperaba.",
+              "La personalidad de Reina Abeja se mantiene coherente con su rol de antagonista, pero la falta de acción concreta con la prueba encontrada puede considerarse contradictoria con su determinación previa.",
+              "La sinopsis y el resumen acumulado establecen que la familia Reina Abeja intenta separar a Sofía y Avispón, lo cual se mantiene en este capítulo, pero la trama se desarrolla de manera que no se presenta un conflicto significativo o una resolución clara en este punto."
+            ]
+          }
+        },
+        {
+          "numero": 5,
+          "resumenCapitulo": "Reina Abeja confronta a Sofía y Avispón con el comprobante de la transferencia bancaria, amenazando con exponer su secreto. Avispón se enfrenta a Reina Abeja, defendiendo su relación con Sofía. Mientras tanto, Sofía comienza a cuestionar su propio sentimiento hacia Avispón.",
+          "cliffhangerCierre": "Avispón se enfrenta a Reina Abeja, defendiendo su relación con Sofía, pero Reina Abeja revela que tiene una sorpresa adicional que cambiará todo",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep5",
+          "generadoEn": "2026-08-02T22:02:23.680Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente de forma concluyente, ya que Reina Abeja no expone el secreto del matrimonio a todos como se esperaba.",
+              "Reina Abeja no utiliza el comprobante de la transferencia bancaria de manera efectiva en la escena, lo que contradice el próximismo decidido para este capítulo.",
+              "Avispón y Sofía parecen tener una relación más avanzada de lo que se esperaría según la sinopsis y el resumen acumulado, considerando que apenas comienzan a conocerse y desarrollar sentimientos reales entre sí."
+            ]
+          }
+        },
+        {
+          "numero": 6,
+          "resumenCapitulo": "Avispón se enfrenta a Reina Abeja, defendiendo su relación con Sofía. Reina Abeja revela que tiene una sorpresa adicional que cambiará todo. Sofía comienza a desarrollar sentimientos hacia Avispón.",
+          "cliffhangerCierre": "La sorpresa de Reina Abeja pone en peligro el futuro de Sofía y Avispón",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep6",
+          "generadoEn": "2026-08-02T22:02:35.798Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente sobre la sorpresa que Reina Abeja tiene preparada para Avispón",
+              "Reina Abeja sigue actuando según su rol de antagonista, pero la amenaza del sobre no se desarrolla como se esperaba",
+              "El hecho de que Sofía comience a desarrollar sentimientos hacia Avispón ya fue establecido en capítulos anteriores, no es un desarrollo nuevo en este capítulo"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
