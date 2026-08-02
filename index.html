@@ -60,6 +60,10 @@
   .search input{flex:1; border:0; outline:0; padding:11px 18px; font-family:'Space Grotesk', sans-serif; font-size:14px; background:transparent;}
   .search button{border:0; background:var(--ink); color:var(--paper); padding:0 20px; font-weight:600; cursor:pointer; font-size:14px;}
   .header__cta{background:linear-gradient(135deg, var(--urgency), var(--urgency-deep)); color:#fff; font-weight:700; font-size:13.5px; padding:11px 18px; border-radius:999px; white-space:nowrap; border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink); animation:ctaPulse 2.4s ease-in-out infinite;}
+  .header__social{display:flex; align-items:center; gap:8px;}
+  .header__social a{display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; border:2px solid var(--ink); background:var(--paper); color:var(--ink); transition:transform .15s ease, background .15s ease;}
+  .header__social a:hover{transform:scale(1.08); background:var(--ink); color:var(--paper);}
+  .header__social svg{width:17px; height:17px; fill:currentColor;}
   @keyframes ctaPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.035);}}
 
   .hero{max-width:1180px; margin:0 auto; padding:36px 20px 10px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:28px; align-items:center;}
@@ -195,6 +199,14 @@
     <div class="search">
       <input type="text" id="searchInput" placeholder="Busca tecnología, hogar, moda, viajes…">
       <button type="button" onclick="clearSearch()">Limpiar</button>
+    </div>
+    <div class="header__social">
+      <a href="https://www.instagram.com/avispateyacl/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.63.07 4.81 0 3.19-.01 3.56-.07 4.81-.15 3.23-1.66 4.77-4.92 4.92-1.25.06-1.62.07-4.85.07-3.2 0-3.58-.01-4.83-.07-3.26-.15-4.77-1.7-4.92-4.92-.06-1.25-.07-1.63-.07-4.81 0-3.19.01-3.56.07-4.81.15-3.23 1.66-4.77 4.92-4.92C8.42 2.21 8.8 2.2 12 2.2zM12 0C8.74 0 8.33.01 7.05.07c-4.35.2-6.78 2.62-6.98 6.98C.01 8.33 0 8.74 0 12c0 3.26.01 3.67.07 4.95.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24c3.26 0 3.67-.01 4.95-.07 4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95 0-3.26-.01-3.67-.07-4.95-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zM12 16a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm6.4-11.85a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@avspate.ya" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok">
+        <svg viewBox="0 0 24 24"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.15-1.39V15.4a5.83 5.83 0 1 1-5-5.77v2.5a3.33 3.33 0 1 0 2.33 3.18V0h2.4a4.27 4.27 0 0 0 .12 1 4.29 4.29 0 0 0 2.1 2.78 4.27 4.27 0 0 0 2.2.61z"/></svg>
+      </a>
     </div>
     <div class="header__cta"><a href="#section-chile" style="color:inherit; text-decoration:none;">Ver todas las ofertas →</a></div>
   </div>
@@ -350,8 +362,8 @@
     </div>
     <div>
       <h4>SÍGUENOS</h4>
-      <a href="https://www.instagram.com/avispateyacl/" target="_blank" rel="noopener" style="display:block; margin:8px 0; opacity:.8;">Instagram</a>
-      <a href="https://www.tiktok.com/@avspate.ya" target="_blank" rel="noopener" style="display:block; margin:8px 0; opacity:.8;">TikTok</a>
+      <a href="https://www.instagram.com/avispateyacl/" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:8px; margin:8px 0; opacity:.8;"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.63.07 4.81 0 3.19-.01 3.56-.07 4.81-.15 3.23-1.66 4.77-4.92 4.92-1.25.06-1.62.07-4.85.07-3.2 0-3.58-.01-4.83-.07-3.26-.15-4.77-1.7-4.92-4.92-.06-1.25-.07-1.63-.07-4.81 0-3.19.01-3.56.07-4.81.15-3.23 1.66-4.77 4.92-4.92C8.42 2.21 8.8 2.2 12 2.2zM12 0C8.74 0 8.33.01 7.05.07c-4.35.2-6.78 2.62-6.98 6.98C.01 8.33 0 8.74 0 12c0 3.26.01 3.67.07 4.95.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24c3.26 0 3.67-.01 4.95-.07 4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95 0-3.26-.01-3.67-.07-4.95-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zM12 16a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm6.4-11.85a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg>Instagram</a>
+      <a href="https://www.tiktok.com/@avspate.ya" target="_blank" rel="noopener" style="display:flex; align-items:center; gap:8px; margin:8px 0; opacity:.8;"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.15-1.39V15.4a5.83 5.83 0 1 1-5-5.77v2.5a3.33 3.33 0 1 0 2.33 3.18V0h2.4a4.27 4.27 0 0 0 .12 1 4.29 4.29 0 0 0 2.1 2.78 4.27 4.27 0 0 0 2.2.61z"/></svg>TikTok</a>
     </div>
   </div>
   <div class="disclosure">
