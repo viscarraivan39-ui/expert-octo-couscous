@@ -9,8 +9,15 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 const run = promisify(execFile);
-const VOICE = "es-CL-CatalinaNeural"; // distinta de la de GeekNoticias (Lorenzo) a propósito
+// Voz por defecto para narrador único: Edge TTS (Catalina), NO Google Chirp
+// 3 HD. Se probó Chirp 3 HD acá y aunque tiene más energía, Google no tiene
+// ninguna voz "es-CL" ni "es-419" — el acento termina sonando genérico/no
+// chileno, y el acento chileno es parte del chiste en la serie de cahuines
+// de la asistente social. Chirp 3 HD queda reservado para Avispanovela
+// (personajes fantasía insecto, donde el acento neutro no rompe nada).
+const VOICE = "es-CL-CatalinaNeural";
 const VOICE_OPTIONS = { rate: "+16%", pitch: "+4Hz" }; // feedback real: "más dinámica, un poco más rápida"
+const GOOGLE_TTS_API_KEY = process.env.GOOGLE_TTS_API_KEY;
 const W = 1080, H = 1920; // vertical 9:16
 const FPS = 30;
 const FONT = "C\\:/Windows/Fonts/arialbd.ttf";
@@ -52,24 +59,63 @@ const ANGULOS_SIN_ROSTRO = [
 const DIR = `assets/${GUION_ID}`;
 if (!existsSync(DIR)) mkdirSync(DIR, { recursive: true });
 
+// Chirp 3 HD no acepta "pitch" (probado en vivo, rechaza con 400), pero sí
+// "speakingRate" — se usa para dar algo de ritmo entre líneas/bloques según
+// el tono del texto, en vez de una velocidad plana siempre igual (pedido
+// real: "le falta más ritmo a la voz").
+function velocidadSegunTexto(texto) {
+  if (/[!¡]/.test(texto)) return 1.15; // exclamación/urgencia -> más rápido
+  if (/\.\.\.\s*$/.test(texto.trim())) return 0.9; // pausa dramática al cierre -> más lento
+  if (/[?¿]/.test(texto)) return 1.0; // pregunta -> ritmo normal
+  return 1.05; // default, levemente más ágil que el habla plana
+}
+
+// Google Cloud TTS (Chirp 3 HD) — se reconoce por el nombre de voz
+// ("es-US-Chirp3-HD-Fenrir", etc). Cualquier otro nombre de voz (formato
+// "es-CL-CatalinaNeural") sigue yendo por Edge TTS, así los guiones viejos
+// no se rompen.
+async function sintetizarLineaGoogle(texto, voz, path) {
+  if (!GOOGLE_TTS_API_KEY) throw new Error("Falta GOOGLE_TTS_API_KEY en el entorno");
+  const idioma = voz.split("-").slice(0, 2).join("-"); // "es-US-Chirp3-HD-Fenrir" -> "es-US"
+  const resp = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_API_KEY}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { text: texto },
+      voice: { languageCode: idioma, name: voz },
+      audioConfig: { audioEncoding: "MP3", speakingRate: velocidadSegunTexto(texto) },
+    }),
+  });
+  if (!resp.ok) throw new Error(`Google TTS HTTP ${resp.status}: ${await resp.text()}`);
+  const data = await resp.json();
+  writeFileSync(path, Buffer.from(data.audioContent, "base64"));
+  return path;
+}
+
+async function sintetizarLineaEdge(texto, voz, path) {
+  const tts = new MsEdgeTTS();
+  await tts.setMetadata(voz, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+  const { audioStream } = await tts.toStream(texto, VOICE_OPTIONS);
+  const chunks = [];
+  await new Promise((resolve, reject) => {
+    audioStream.on("data", (c) => chunks.push(c));
+    audioStream.on("end", resolve);
+    audioStream.on("error", reject);
+  });
+  writeFileSync(path, Buffer.concat(chunks));
+  return path;
+}
+
 // Sintetiza una línea de texto con una voz específica — pieza base tanto
 // para el modo de un solo narrador como para diálogos multi-personaje.
 async function sintetizarLinea(texto, voz, path, intento = 0) {
   try {
-    const tts = new MsEdgeTTS();
-    await tts.setMetadata(voz, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
-    const { audioStream } = await tts.toStream(texto, VOICE_OPTIONS);
-    const chunks = [];
-    await new Promise((resolve, reject) => {
-      audioStream.on("data", (c) => chunks.push(c));
-      audioStream.on("end", resolve);
-      audioStream.on("error", reject);
-    });
-    writeFileSync(path, Buffer.concat(chunks));
-    return path;
+    if (voz.includes("Chirp3-HD")) return await sintetizarLineaGoogle(texto, voz, path);
+    return await sintetizarLineaEdge(texto, voz, path);
   } catch (err) {
     // El WebSocket no oficial de Edge TTS a veces se cierra antes de "turn.end"
-    // (corte transitorio) — reintentar, mismo patrón que descargarImagen.
+    // (corte transitorio), y Google TTS puede dar 429/5xx transitorio —
+    // reintentar en ambos casos, mismo patrón que descargarImagen.
     if (intento < 4) {
       await sleep(3000 * (intento + 1));
       return sintetizarLinea(texto, voz, path, intento + 1);
@@ -137,6 +183,11 @@ const PROMPT_RESPALDO = "Empty stadium under dramatic lighting, photorealistic, 
 // también — si no, la imagen genérica fotorrealista queda pegada en medio
 // de un video de dibujos animados y se nota muchísimo.
 const PROMPT_RESPALDO_COMIC = "A cheerful empty stage with spotlights, colorful comic book illustration style, bold outlines, flat vibrant colors, vertical composition";
+// Respaldo para tomas de "Avispanovela" (insectos antropomorfizados) — el
+// respaldo genérico de estadio quedaba totalmente fuera de tema pegado en
+// medio de un video de personajes-insecto, se notaba tanto como el corte de
+// contenido que se supone tenía que disimular.
+const PROMPT_RESPALDO_INSECTO = "Close-up of an elegant golden honeycomb texture with dramatic warm lighting and soft shadows, no people, photorealistic, vertical composition";
 // Último recurso: ni siquiera el respaldo es 100% infalible (el filtro de
 // FLUX no es determinístico — el mismo prompt puede pasar una vez y
 // bloquearse otra) — sin personas ni escenas, imposible de asociar a nada.
@@ -195,8 +246,10 @@ async function descargarImagen(prompt, path, intento = 0) {
     // tirar abajo todo el render de un video por una sola toma.
     console.log(`      ⚠ falla persistente (${err.message}), usando prompt de respaldo para ${path}`);
     const esComic = /comic book illustration style/i.test(prompt);
+    const esInsecto = /anthropomorphic insect/i.test(prompt);
     try {
-      const base64 = await llamarFlux(esComic ? PROMPT_RESPALDO_COMIC : PROMPT_RESPALDO);
+      const respaldo = esComic ? PROMPT_RESPALDO_COMIC : esInsecto ? PROMPT_RESPALDO_INSECTO : PROMPT_RESPALDO;
+      const base64 = await llamarFlux(respaldo);
       writeFileSync(path, Buffer.from(base64, "base64"));
       return path;
     } catch (err2) {
