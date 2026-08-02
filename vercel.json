@@ -1,4 +1,7 @@
 {
+  "rewrites": [
+    { "source": "/resenas", "destination": "/api/resenas" }
+  ],
   "crons": [{
     "path": "/api/cron/fetch-offers",
     "schedule": "0 13 * * *"

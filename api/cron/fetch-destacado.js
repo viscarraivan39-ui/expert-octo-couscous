@@ -1,6 +1,6 @@
 // /api/cron/fetch-destacado.js
 //
-// Cada 2-3 días (cron externo en cron-job.org, ver nota abajo) elige un
+// Una vez por día (cron externo en cron-job.org, ver nota abajo) elige un
 // producto real del catálogo (data/productos.json, la misma fuente que usa
 // el sitio) — prioriza el de mayor descuento entre los que no salieron
 // destacados recientemente — y genera un artículo: qué es, specs, para qué
@@ -8,7 +8,10 @@
 // porque es lo más honesto para algo que se presenta como reseña.
 //
 // Guarda el resultado en Vercel KV (mismo KV que usa fetch-offers.js), en
-// una lista "destacados:chile" con los últimos 30, para tener historial.
+// una lista "destacados:chile" con los últimos 30, para tener historial. El
+// archivo completo se publica en /resenas (api/resenas.js) — contenido
+// original real, no solo listados, para pasar la revisión de "contenido de
+// bajo valor" de AdSense.
 //
 // ─── VARIABLES DE ENTORNO NECESARIAS ───────────────────────────────────────
 //   GROQ_API_KEY, NVIDIA_API_KEY (respaldo), KV_REST_API_URL,
@@ -16,8 +19,9 @@
 //
 // ─── PROGRAMACIÓN ───────────────────────────────────────────────────────────
 // El plan Hobby de Vercel ya usa su único cron nativo diario en
-// fetch-offers.js — este se dispara desde cron-job.org, cada 2-3 días,
-// pegándole a /api/cron/fetch-destacado?key=ADMIN_KEY
+// fetch-offers.js — este se dispara desde cron-job.org, UNA VEZ POR DÍA,
+// pegándole a /api/cron/fetch-destacado?key=ADMIN_KEY (antes era cada 2-3
+// días — subido a diario para tener volumen de contenido real más rápido).
 
 const MAX_HISTORY = 30;
 const RECENT_AVOID = 10; // no repetir un producto que salió en los últimos N destacados
@@ -72,18 +76,18 @@ Categoría: ${producto.cat}
 Tienda: ${producto.store}
 Precio actual: $${producto.price}${producto.old ? ` (antes $${producto.old}, ${producto.off} de descuento)` : ''}
 
-Escribí un artículo breve tipo "producto destacado":
-1. Qué es el producto y para quién/qué uso sirve (trabajo, gaming, hogar, deporte, etc. — el que corresponda según el nombre)
-2. Sus características principales, basándote SOLO en lo que el nombre del producto ya dice (no inventes specs técnicas que no están ahí)
-3. Por qué esta oferta puntual vale la pena (o si el descuento es chico, sé honesto y no lo exageres)
-4. Una valoración final honesta — no todo producto es "el mejor", si es una opción correcta y sin más, decilo así
+Escribí un artículo bien armado tipo "producto destacado", con subtítulos <h3> para cada sección:
+1. <h3>Qué es</h3> — qué es el producto y para quién/qué uso sirve (trabajo, gaming, hogar, deporte, etc. — el que corresponda según el nombre)
+2. <h3>Características</h3> — sus características principales, basándote SOLO en lo que el nombre del producto ya dice (no inventes specs técnicas que no están ahí)
+3. <h3>¿Para quién es (y para quién no)?</h3> — sé concreto: a qué tipo de usuario le sirve esto, y a cuál no le conviene (honestidad real, no todo es para todos)
+4. <h3>¿Vale la pena la oferta?</h3> — por qué esta oferta puntual vale la pena (o si el descuento es chico, sé honesto y no lo exageres), y una valoración final — no todo producto es "el mejor", si es una opción correcta y sin más, decilo así
 
 Español de Chile, tono cercano pero informativo, sin exagerar con superlativos vacíos.
 
 Devolvé SOLO un JSON válido (sin markdown, sin \`\`\`) con esta forma exacta:
-{"titulo": "...", "resumen": "1-2 líneas para la vista previa", "contenido_html": "<p>...</p><p>...</p>...", "copy_instagram": "..."}
+{"titulo": "...", "resumen": "1-2 líneas para la vista previa", "contenido_html": "<h3>...</h3><p>...</p><h3>...</h3><p>...</p>...", "copy_instagram": "..."}
 
-- "contenido_html": 3-5 párrafos <p>, total 200-350 palabras.
+- "contenido_html": las 4 secciones con su <h3> y 1-2 <p> cada una, total 280-420 palabras (más sustancia que un blurb corto, esto es contenido diario real).
 - "copy_instagram": versión corta para redes, gancho + precio + link implícito, máximo 500 caracteres.`;
 }
 
