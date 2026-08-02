@@ -82,16 +82,23 @@ export default async function handler(req, res) {
   :root{--ink:#171521; --paper:#FFF6E9; --paper-2:#FFE0B8; --trust:#2B5CFF; --line:rgba(23,21,33,0.14);}
   *{box-sizing:border-box;}
   body{margin:0; background:var(--paper-2); color:var(--ink); font-family:'Space Grotesk', sans-serif;}
-  .wrap{max-width:760px; margin:0 auto; padding:40px 20px 80px;}
+  .banner{background:var(--ink); color:#fff; text-align:center; padding:10px 16px; font-family:'Archivo Black', sans-serif; font-size:13.5px; letter-spacing:.02em;}
+  .banner span{color:#FFC629;}
+  .wrap{max-width:760px; margin:0 auto; padding:32px 20px 80px;}
   a{color:var(--trust);}
   .back{display:inline-block; margin-bottom:20px; font-weight:700; text-decoration:none; color:var(--ink);}
+  .brand{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+  .brand img{width:44px; height:44px; border-radius:50%; border:2px solid var(--ink);}
+  .brand span{font-family:'Archivo Black', sans-serif; font-size:20px;}
   h1{font-family:'Archivo Black', sans-serif; font-size:36px; margin:0 0 8px;}
   .lead{opacity:.75; margin:0 0 32px; max-width:60ch;}
 </style>
 </head>
 <body>
+<div class="banner">🐝 <span>Ofertas que pican</span> todos los días — avispateya.cl</div>
 <div class="wrap">
   <a class="back" href="/">← Volver a AvíspateYa.cl</a>
+  <div class="brand"><img src="/img/logo.png" alt="AvíspateYa.cl"><span>Avíspate<span style="color:#FFC629;">Ya</span></span></div>
   <h1>Reseñas de productos</h1>
   <p class="lead">Analizamos las ofertas que rastreamos y contamos, sin vueltas, qué tan buenas son de verdad — qué es el producto, para qué sirve, y si el descuento vale la pena.</p>
   ${articulos}
