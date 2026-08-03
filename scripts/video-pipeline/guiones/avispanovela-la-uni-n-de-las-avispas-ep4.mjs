@@ -80,9 +80,9 @@ export const bloques = [
   {
     id: "bloque10",
     dialogo: [
-      { texto: ``, voz: "es-US-Chirp3-HD-Puck" } /* Narrador */
+      { texto: `¿Logrará Avispón proteger a Sofía antes de que Reina Abeja exponga su secreto a todos?`, voz: "es-US-Chirp3-HD-Puck" } /* Narrador */
     ],
-    imagenPrompt: `, anthropomorphic insect with human-like body and expressive eyes, hyperrealistic 3D animation style, dramatic cinematic lighting, telenovela drama aesthetic, vertical portrait composition`,
+    imagenPrompt: `una imagen oscura y misteriosa, con la sombra de Reina Abeja acechando en el fondo, anthropomorphic insect with human-like body and expressive eyes, hyperrealistic 3D animation style, dramatic cinematic lighting, telenovela drama aesthetic, vertical portrait composition`,
     keyword: "CONTINUARÁ...",
   },
 ];

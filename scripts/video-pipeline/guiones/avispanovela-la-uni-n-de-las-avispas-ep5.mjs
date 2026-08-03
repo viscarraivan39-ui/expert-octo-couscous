@@ -51,9 +51,9 @@ export const bloques = [
   {
     id: "bloque6",
     dialogo: [
-      { texto: ``, voz: "es-US-Chirp3-HD-Puck" } /* Narrador */
+      { texto: `¿Qué sorpresa tiene preparada Reina Abeja que podría cambiarlo todo?`, voz: "es-US-Chirp3-HD-Puck" } /* Narrador */
     ],
-    imagenPrompt: `Pantalla oscura, con un zumbido de fondo, anthropomorphic insect with human-like body and expressive eyes, hyperrealistic 3D animation style, dramatic cinematic lighting, telenovela drama aesthetic, vertical portrait composition`,
+    imagenPrompt: `Pantalla oscura, con la silueta de Reina Abeja sonriendo con malicia, anthropomorphic insect with human-like body and expressive eyes, hyperrealistic 3D animation style, dramatic cinematic lighting, telenovela drama aesthetic, vertical portrait composition`,
     keyword: "CONTINUARÁ...",
   },
 ];
