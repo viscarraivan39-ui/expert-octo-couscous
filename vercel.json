@@ -8,7 +8,8 @@
   }],
   "functions": {
     "api/cron/fetch-destacado.js": { "maxDuration": 30 },
-    "api/omr.js": { "maxDuration": 30 }
+    "api/omr.js": { "maxDuration": 30 },
+    "api/guia-personalizada.js": { "maxDuration": 30 }
   },
   "headers": [
     {

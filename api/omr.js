@@ -42,7 +42,7 @@ Devuelve SOLO un JSON válido, sin texto extra, con esta forma exacta:
 {"folio":"AY-M1-01","respuestas":{"1":"B","2":null,"3":"A"}}
 
 Reglas:
-- "folio" es el código de guía que aparece en el recuadro (formato AY-M1-XX). Si no se lee con claridad, usa null.
+- "folio" es el código de guía que aparece en el recuadro (formato AY-M1-XX o AY-C-XXXXX). Léelo letra por letra, con mayúsculas y guiones exactos. Si no se lee con claridad, usa null.
 - "respuestas" debe tener una entrada por CADA número de pregunta visible en la hoja.
 - El valor es la letra (A, B, C o D) del círculo que está claramente relleno/marcado.
 - Si una pregunta no tiene ningún círculo marcado, o tiene más de uno marcado, o no se alcanza a leer, el valor debe ser null.
@@ -91,18 +91,47 @@ Reglas:
     }
 
     const folio = lectura.folio;
-    const rango = folio ? FOLIO_RANGOS[folio] : null;
-    if (!rango) {
-      return res.status(200).json({ folio: folio || null, reconocido: false, mensaje: 'No pude identificar el código de la guía en la foto. Asegúrate de encuadrar el recuadro completo.' });
+    if (!folio) {
+      return res.status(200).json({ folio: null, reconocido: false, mensaje: 'No pude identificar el código de la guía en la foto. Asegúrate de encuadrar el recuadro completo.' });
     }
 
-    const [desde, hasta] = rango;
+    const rango = FOLIO_RANGOS[folio];
+    let claves = null;
+    let numeros = [];
+
+    if (rango) {
+      const [desde, hasta] = rango;
+      claves = {};
+      for (let n = desde; n <= hasta; n++) {
+        claves[n] = CLAVES_M1[n];
+        numeros.push(n);
+      }
+    } else if (folio.startsWith('AY-C-')) {
+      const KV_URL = process.env.KV_REST_API_URL;
+      const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+      if (KV_URL && KV_TOKEN) {
+        const kvResp = await fetch(`${KV_URL}/get/guia%3Acustom%3A${folio}`, {
+          headers: { Authorization: `Bearer ${KV_TOKEN}` },
+        });
+        const kvData = await kvResp.json();
+        if (kvData.result) {
+          const guardado = JSON.parse(kvData.result);
+          claves = guardado.claves;
+          numeros = Array.from({ length: guardado.total }, (_, i) => i + 1);
+        }
+      }
+    }
+
+    if (!claves) {
+      return res.status(200).json({ folio, reconocido: false, mensaje: 'No encontré esa guía (puede que sea una guía personalizada ya vencida). Vuelve a pedirla si quieres corregirla.' });
+    }
+
     const detalle = [];
     let aciertos = 0;
     let respondidas = 0;
-    for (let n = desde; n <= hasta; n++) {
+    for (const n of numeros) {
       const marcada = lectura.respuestas?.[String(n)] ?? null;
-      const correcta = CLAVES_M1[n];
+      const correcta = claves[n];
       const ok = marcada && marcada === correcta;
       if (marcada) respondidas++;
       if (ok) aciertos++;
@@ -112,7 +141,7 @@ Reglas:
     return res.status(200).json({
       folio,
       reconocido: true,
-      total: hasta - desde + 1,
+      total: numeros.length,
       respondidas,
       aciertos,
       detalle,

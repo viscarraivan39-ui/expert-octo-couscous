@@ -105,6 +105,8 @@
   .apoyo-item b{display:block;font-size:13px;font-weight:500}
   .apoyo-item span{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
   .apoyo-nota{font-size:11.5px;color:var(--dim);line-height:1.4;margin-top:2px}
+  .apoyo input{width:100%;background:var(--bg);border:1px solid var(--panel2);color:var(--text);font-size:12px;padding:7px 10px;border-radius:8px;outline:none;margin-top:6px;box-sizing:border-box}
+  .apoyo .enviar{width:100%;margin-top:8px;font-size:12.5px;padding:8px}
   .pizarra{flex:1;background:var(--board);color:var(--emi-ink);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
   .pz-head{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:1px solid #E8E4D8;flex-wrap:wrap;gap:6px}
   .pz-title{font-family:var(--display);font-weight:600;font-size:13px;color:#6B7280}
@@ -261,6 +263,12 @@
             <b>Currículum por nivel</b><span>MINEDUC — 8° básico a 4° medio</span>
           </a>
           <div class="apoyo-nota">Pronto: recomendaciones de canales/profes externos según el tema en que más te cuesta.</div>
+        </div>
+        <div class="tarjeta apoyo">
+          <h4>📝 Pide tu guía</h4>
+          <div class="apoyo-nota">¿Ya hiciste las 4 guías? Pide una nueva sobre el tema que quieras y te armo un PDF al tiro.</div>
+          <input id="input-tema-guia" placeholder="ej: ecuaciones cuadráticas" onkeydown="if(event.key==='Enter')pedirGuiaPersonalizada()">
+          <button class="enviar" id="btn-guia-custom" onclick="pedirGuiaPersonalizada()">Generar guía PDF</button>
         </div>
       </aside>
 
@@ -932,6 +940,45 @@ async function onFotoSeleccionada(event){
     addMsg("profe", "Se cortó la conexión al leer tu hoja: " + err.message);
     setEstado("Atenta", "#93A0BC", false);
   }
+}
+
+async function pedirGuiaPersonalizada(){
+  const input = document.getElementById("input-tema-guia");
+  const tema = input.value.trim();
+  if(!tema) return;
+  const btn = document.getElementById("btn-guia-custom");
+  btn.disabled = true;
+  btn.textContent = "Generando…";
+  addMsg("profe", `Armando tu guía sobre "${tema}"… dame unos segundos.`);
+  setEstado("Pensando…", "#93A0BC", false);
+  try{
+    const resp = await fetch("/api/guia-personalizada", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tema }),
+    });
+    if(!resp.ok){
+      const data = await resp.json().catch(() => ({}));
+      addMsg("profe", data.error || "No pude generar la guía. Intenta de nuevo.");
+      setEstado("Atenta", "#93A0BC", false);
+      return;
+    }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = tema.trim().toLowerCase().replace(/[^\w\sáéíóúñ-]/gi, "").replace(/\s+/g, "-") + ".pdf";
+    a.click();
+    URL.revokeObjectURL(url);
+    input.value = "";
+    addMsg("profe", "¡Lista! Descargué tu guía personalizada. Cuando la resuelvas, sácale foto a la hoja de respuestas y súbela acá (botón +) para corregirla juntos.");
+    setEstado("Explicando", "#14B8A6", false);
+  }catch(err){
+    addMsg("profe", "Se cortó la conexión generando tu guía: " + err.message);
+    setEstado("Atenta", "#93A0BC", false);
+  }
+  btn.disabled = false;
+  btn.textContent = "Generar guía PDF";
 }
 
 function toggleFullscreen(){
