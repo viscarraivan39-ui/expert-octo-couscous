@@ -52,7 +52,7 @@
   .ticker__track span b{color:var(--energy); font-weight:700;}
   @keyframes scrollTicker{from{transform:translateX(0);} to{transform:translateX(-100%);}}
 
-  header{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:2px solid var(--ink); box-shadow:0 4px 14px rgba(23,21,33,0.08);}
+  header{position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:2px solid var(--ink); box-shadow:0 4px 14px rgba(23,21,33,0.08);}
   .header__inner{max-width:1180px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
   .logo{font-family:'Archivo Black', sans-serif; font-size:22px; letter-spacing:-0.01em; display:flex; align-items:center; gap:6px; white-space:nowrap;}
   .logo .dot{color:var(--urgency);}
@@ -91,6 +91,9 @@
   .section__head h2{font-family:'Archivo Black', sans-serif; font-size:24px; margin:0; position:relative; padding-bottom:8px;}
   .section__head h2::after{content:""; position:absolute; left:0; bottom:0; width:46px; height:5px; background:linear-gradient(90deg, var(--urgency), var(--energy)); border-radius:3px;}
   .section__head span{font-size:13px; opacity:.65;}
+  .sort{display:flex; align-items:center; gap:8px; font-size:12.5px;}
+  .sort span{opacity:.6;}
+  .sort select{border:2px solid var(--ink); border-radius:999px; background:#fff; padding:6px 12px; font-family:'Space Grotesk', sans-serif; font-size:12.5px; font-weight:600; cursor:pointer;}
 
   .grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));}
   .empty{grid-column:1/-1; text-align:center; padding:40px 20px; opacity:.6; font-size:14px;}
@@ -125,6 +128,16 @@
   .testimonial__avatar{width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg, var(--trust), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Archivo Black', sans-serif; font-size:13px; flex-shrink:0;}
   .testimonial__name{font-weight:700; font-size:13px;}
   .testimonial__meta{font-size:11px; opacity:.6; font-family:'JetBrains Mono', monospace;}
+
+  .metodo{display:grid; grid-template-columns:repeat(2,1fr); gap:30px 48px;}
+  .metodo__item .num-row{display:flex; align-items:center; gap:10px; margin-bottom:9px;}
+  .metodo__item .num{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--trust); font-weight:700;}
+  .metodo__item .line{height:1px; width:26px; background:var(--trust);}
+  .metodo__item h4{margin:0; font-family:'Archivo Black', sans-serif; font-size:17px;}
+  .metodo__item p{margin:0; font-size:13.5px; line-height:1.6; opacity:.78;}
+  @media(max-width:768px){.metodo{grid-template-columns:1fr;}}
+
+  .guia-kicker{font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--trust); display:block; margin-bottom:8px;}
 
   .subscribe{background:var(--ink); margin-top:60px; padding:52px 20px; color:var(--paper);}
   .subscribe__inner{max-width:640px; margin:0 auto; text-align:center;}
@@ -250,7 +263,16 @@
 <section class="section" id="section-chile">
   <div class="section__head">
     <h2>Ofertas en Chile 🇨🇱</h2>
-    <span id="chile-count">Cargando ofertas...</span>
+    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+      <span id="chile-count">Cargando ofertas...</span>
+      <div class="sort">
+        <span>Ordenar</span>
+        <select id="sortSelect" onchange="setSort(this.value)">
+          <option value="off">Mayor descuento</option>
+          <option value="price">Menor precio</option>
+        </select>
+      </div>
+    </div>
   </div>
   <div class="grid" id="grid-chile"></div>
 </section>
@@ -275,22 +297,22 @@
   <div class="section__head">
     <h2>Cómo funciona AvíspateYa</h2>
   </div>
-  <div class="testimonials">
-    <div class="testimonial">
-      <div class="testimonial__name" style="font-size:15px;">1. Rastreo de precios</div>
-      <p class="testimonial__quote">Revisamos el historial de precios de cada producto en Mercado Libre y otras tiendas chilenas. Una oferta solo entra al sitio si el precio actual está realmente por debajo de su promedio reciente — no comparamos contra un "precio de lista" inflado que la misma tienda nunca cobró.</p>
+  <div class="metodo">
+    <div class="metodo__item">
+      <div class="num-row"><span class="num">01</span><span class="line"></span><h4>Rastreo de precios</h4></div>
+      <p>Revisamos el historial de precios de cada producto en Mercado Libre y otras tiendas chilenas. Una oferta solo entra al sitio si el precio actual está realmente por debajo de su promedio reciente — no comparamos contra un "precio de lista" inflado que la misma tienda nunca cobró.</p>
     </div>
-    <div class="testimonial">
-      <div class="testimonial__name" style="font-size:15px;">2. Verificación manual y automática</div>
-      <p class="testimonial__quote">Las ofertas marcadas <b>"verificada manualmente"</b> las revisamos a mano antes de publicarlas. Las marcadas <b>"automática"</b> vienen del catálogo de la tienda sin nuestra revisión caso por caso — por eso separamos ambas categorías en vez de mezclarlas.</p>
+    <div class="metodo__item">
+      <div class="num-row"><span class="num">02</span><span class="line"></span><h4>Verificación manual y automática</h4></div>
+      <p>Las ofertas marcadas <b>"verificada manualmente"</b> las revisamos a mano antes de publicarlas. Las marcadas <b>"automática"</b> vienen del catálogo de la tienda sin nuestra revisión caso por caso — por eso separamos ambas categorías en vez de mezclarlas.</p>
     </div>
-    <div class="testimonial">
-      <div class="testimonial__name" style="font-size:15px;">3. Sin comisión oculta al comprador</div>
-      <p class="testimonial__quote">Cuando el link es de afiliado, ganamos una comisión de la tienda — nunca un recargo sobre el precio que ves. Pagas exactamente lo mismo que si entraras directo a Mercado Libre.</p>
+    <div class="metodo__item">
+      <div class="num-row"><span class="num">03</span><span class="line"></span><h4>Sin comisión oculta al comprador</h4></div>
+      <p>Cuando el link es de afiliado, ganamos una comisión de la tienda — nunca un recargo sobre el precio que ves. Pagas exactamente lo mismo que si entraras directo a Mercado Libre.</p>
     </div>
-    <div class="testimonial">
-      <div class="testimonial__name" style="font-size:15px;">4. Los precios cambian</div>
-      <p class="testimonial__quote">Una oferta puede subir de precio o agotarse en cualquier momento — verifica siempre el precio final en la tienda antes de pagar. Por eso mostramos la fecha de rastreo y linkeamos directo al producto, no a una página intermedia.</p>
+    <div class="metodo__item">
+      <div class="num-row"><span class="num">04</span><span class="line"></span><h4>Los precios cambian</h4></div>
+      <p>Una oferta puede subir de precio o agotarse en cualquier momento — verifica siempre el precio final en la tienda antes de pagar. Por eso mostramos la fecha de rastreo y linkeamos directo al producto, no a una página intermedia.</p>
     </div>
   </div>
 </section>
@@ -312,14 +334,17 @@
   </div>
   <div class="testimonials">
     <div class="testimonial">
+      <span class="guia-kicker">Tecnología</span>
       <div class="testimonial__name" style="font-size:15px;">Notebooks: qué mirar además del precio</div>
       <p class="testimonial__quote">Para uso de oficina o estudio, 8GB de RAM y SSD (no disco duro mecánico) son el mínimo real hoy — un SSD hace más diferencia en velocidad diaria que un procesador más caro. Si es para diseño o juegos, mirá la tarjeta gráfica dedicada antes que los GB de RAM. Windows 11 Home alcanza para el 95% de los usos domésticos; la versión Pro solo importa si necesitas unirte a un dominio de empresa.</p>
     </div>
     <div class="testimonial">
+      <span class="guia-kicker">Hogar</span>
       <div class="testimonial__name" style="font-size:15px;">Freidoras de aire: elegir la capacidad correcta</div>
       <p class="testimonial__quote">Para 1-2 personas, 3.5-4 litros alcanza. Familias de 4+ deberían mirar 5.5 litros o más, o vas a tener que cocinar en varias tandas. La potencia (watts) influye más en qué tan rápido calienta que en el resultado final — no pagues de más solo por watts si la capacidad ya te sirve.</p>
     </div>
     <div class="testimonial">
+      <span class="guia-kicker">Conectividad</span>
       <div class="testimonial__name" style="font-size:15px;">Router 4G: cuándo conviene sobre fibra</div>
       <p class="testimonial__quote">Un router 4G/LTE tiene sentido si no hay fibra disponible en tu zona o como respaldo ante cortes. Para uso diario con varios dispositivos conectados a la vez, la fibra sigue siendo más estable y sin límite de datos — el router 4G rinde mejor como solución temporal o secundaria.</p>
     </div>
@@ -403,6 +428,23 @@ const PRODUCTS_INTL = [];
 let allOffers = [...PRODUCTS_CHILE_MANUAL, ...PRODUCTS_INTL];
 let filteredOffers = allOffers;
 let currentFilter = 'all';
+let currentSort = 'off';
+
+function setSort(value) {
+  currentSort = value;
+  renderOffers();
+}
+
+// off viene como texto tipo "-60%" (negativo = descuento) — parseamos a
+// número para poder ordenar sin tocar cómo se guarda/muestra en la tarjeta.
+function parseOff(o) { return parseInt(o.off, 10) || 0; }
+function parsePrice(o) { return parseInt(String(o.price).replace(/[^\d]/g, ''), 10) || 0; }
+function ordenarOfertas(lista) {
+  const copia = [...lista];
+  if (currentSort === 'off') return copia.sort((a, b) => parseOff(a) - parseOff(b)); // más negativo = mayor descuento
+  if (currentSort === 'price') return copia.sort((a, b) => parsePrice(a) - parsePrice(b));
+  return copia;
+}
 
 // Trae las ofertas automáticas de Mercado Libre desde nuestra base de datos
 // (las actualiza el cron todos los días) y las agrega a las manuales.
@@ -434,7 +476,7 @@ function renderOffers() {
     return matchesCategory && matchesSearch;
   });
 
-  const chileOffers = filteredOffers.filter(o => o.country === 'chile');
+  const chileOffers = ordenarOfertas(filteredOffers.filter(o => o.country === 'chile'));
   const intlOffers = filteredOffers.filter(o => o.country === 'internacional');
 
   renderGrid('#grid-chile', chileOffers, 'No hay ofertas en esta categoría aún.');
