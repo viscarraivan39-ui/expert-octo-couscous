@@ -69,6 +69,9 @@
   #btn-config{background:var(--panel2);color:var(--dim);font-size:12px;padding:6px 10px;border-radius:8px}
   #btn-voz{background:var(--panel2);color:var(--brand);font-size:13px;padding:6px 10px;border-radius:8px}
   #btn-voz.off{color:var(--dim)}
+  #btn-full{background:var(--panel2);color:var(--dim);font-size:14px;padding:6px 10px;border-radius:8px}
+  .emi:fullscreen{height:100vh;border-radius:0;border:none;box-shadow:none}
+  .emi:fullscreen .pizarra{max-height:none}
   .tabs{display:none;gap:8px;padding:8px 12px 0;flex-shrink:0}
   .tabs button{flex:1;padding:7px;border-radius:10px;font-size:14px;font-weight:500;background:var(--panel);color:var(--dim)}
   .tabs button.on{background:var(--brand2);color:#fff}
@@ -211,7 +214,7 @@
   <h2>Tu primera clase con Profe Emi</h2>
   <p class="sub">Ejercicio real de modelamiento, estilo PAES M1. Escribí tu ecuación abajo.</p>
 
-  <div class="emi">
+  <div class="emi" id="emi-widget">
     <div class="emi-header">
       <div><span class="emi-logo">Profe<b>Emi</b></span><span class="emi-chip">M1 · Álgebra</span></div>
       <div class="paesdias">
@@ -219,6 +222,7 @@
         <div class="perfil-chip" id="perfil-chip" onclick="abrirPerfil()" style="cursor:pointer"></div>
         <button id="btn-voz" class="off" onclick="toggleVoz()">🔇 voz</button>
         <button id="btn-config" onclick="abrirConfig()">⚙ voz</button>
+        <button id="btn-full" onclick="toggleFullscreen()" title="Pantalla completa">⛶</button>
       </div>
     </div>
 
@@ -676,6 +680,19 @@ function subirFoto(){
   enviarAlModelo("📸 (sube foto de su desarrollo a mano)", "(el alumno subió una foto de su desarrollo a mano)");
 }
 function quitarAdjunto(){ document.getElementById("adjunto").style.display = "none"; }
+
+function toggleFullscreen(){
+  const el = document.getElementById("emi-widget");
+  if(!document.fullscreenElement){
+    (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el);
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+  }
+}
+document.addEventListener("fullscreenchange", () => {
+  const btn = document.getElementById("btn-full");
+  if(btn) btn.textContent = document.fullscreenElement ? "⤡" : "⛶";
+});
 
 function verTab(t){
   document.body.classList.toggle("ver-guias", t === "gu");
