@@ -30,23 +30,25 @@
   header nav{margin-left:auto;display:flex;align-items:center;gap:18px}
   header nav a{font-weight:700;font-size:13.5px;text-decoration:none}
 
-  .hook{max-width:900px;margin:0 auto;padding:56px 20px 40px;text-align:center}
-  .hook__tag{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(--brand),#0F766E);color:#fff;display:inline-block;padding:6px 14px;border-radius:6px;border:1.5px solid var(--ink);margin-bottom:18px;box-shadow:2px 2px 0 var(--ink)}
-  .hook h1{font-family:'Archivo Black',sans-serif;font-size:clamp(28px,5vw,48px);line-height:1.05;margin:0 0 16px}
-  .hook h1 em{font-style:normal;color:var(--urgency)}
-  .hook p{font-size:17px;line-height:1.55;max-width:60ch;margin:0 auto 26px;opacity:.85}
-  .hook .btn-cta{display:inline-block;background:var(--ink);color:var(--paper);font-weight:700;font-size:15px;padding:15px 30px;border-radius:999px;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--energy);text-decoration:none}
+  .dark-hero{background:var(--bg)}
+
+  .hook{max-width:900px;margin:0 auto;padding:56px 20px 40px;text-align:center;color:var(--text)}
+  .hook__tag{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:inline-block;padding:6px 14px;border-radius:6px;border:1.5px solid var(--panel2);margin-bottom:18px}
+  .hook h1{font-family:'Archivo Black',sans-serif;font-size:clamp(28px,5vw,48px);line-height:1.05;margin:0 0 16px;color:var(--text)}
+  .hook h1 em{font-style:normal;color:var(--brand)}
+  .hook p{font-size:17px;line-height:1.55;max-width:60ch;margin:0 auto 26px;color:var(--dim)}
+  .hook .btn-cta{display:inline-block;background:var(--brand);color:#fff;font-weight:700;font-size:15px;padding:15px 30px;border-radius:999px;border:2px solid var(--brand2);box-shadow:4px 4px 0 var(--panel2);text-decoration:none}
   .hook .btn-cta:hover{transform:translateY(-2px)}
-  .hook .sub{margin-top:14px;font-size:12.5px;opacity:.6;font-family:'JetBrains Mono',monospace}
+  .hook .sub{margin-top:14px;font-size:12.5px;color:var(--dim);font-family:'JetBrains Mono',monospace}
 
   .porque{max-width:1000px;margin:0 auto;padding:10px 20px 50px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .porque .card{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:20px;box-shadow:3px 3px 0 var(--ink)}
-  .porque .card b{font-family:'Archivo Black',sans-serif;font-size:15px;display:block;margin-bottom:8px}
-  .porque .card p{font-size:13.5px;line-height:1.5;opacity:.8;margin:0}
+  .porque .card{background:var(--panel);border:1px solid var(--panel2);border-radius:14px;padding:20px}
+  .porque .card b{font-family:'Archivo Black',sans-serif;font-size:15px;display:block;margin-bottom:8px;color:var(--text)}
+  .porque .card p{font-size:13.5px;line-height:1.5;color:var(--dim);margin:0}
   @media(max-width:760px){.porque{grid-template-columns:1fr}}
 
-  .franja{background:var(--trust-deep);color:var(--paper);text-align:center;padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:13px}
-  .franja b{color:var(--energy)}
+  .franja{background:var(--panel2);color:var(--text);text-align:center;padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:13px}
+  .franja b{color:var(--brand)}
 
   /* ── Widget de clase (Profe Emi) — identidad propia, oscura ── */
   .clase-wrap{max-width:1180px;margin:0 auto;padding:44px 20px 70px}
@@ -174,12 +176,13 @@
   </div>
 </header>
 
+<div class="dark-hero">
 <section class="hook">
   <span class="hook__tag">🐝 AVÍSPATE YA TE PRESENTA</span>
-  <h1>ChatGPT te da la respuesta. <em>Profe Emi no.</em></h1>
-  <p>Es la avispa profesora de AvíspateYa: te ayuda a preparar la PAES de matemática (M1) sin jamás resolverte el ejercicio — te hace pensar hasta que lo saques tú. Gratis, sin registrarte, prueba ahora mismo.</p>
+  <h1>Profe Emi: la avispa que <em>te hace pensar</em>, no que te tira la respuesta</h1>
+  <p>Practica PAES M1 gratis, ejercicio por ejercicio. Profe Emi no te resuelve nada — te pregunta hasta que la saques tú solo. Sin registrarte, dale no más.</p>
   <a class="btn-cta" href="#clase">Empezar clase gratis ↓</a>
-  <div class="sub">100% con IA · sin costo por ahora · nunca te da la respuesta directa</div>
+  <div class="sub">100% con IA · gratis por ahora · nunca te da la respuesta directa</div>
 </section>
 
 <div class="porque">
@@ -198,6 +201,7 @@
 </div>
 
 <div class="franja">⏳ Quedan pocos meses para la PAES — <b>practica gratis, hoy</b></div>
+</div>
 
 <section class="clase-wrap" id="clase">
   <h2>Tu primera clase con Profe Emi</h2>
@@ -210,7 +214,7 @@
         <span>⏳ PAES: <b id="dias-paes">—</b></span>
         <div class="perfil-chip" id="perfil-chip" onclick="abrirPerfil()" style="cursor:pointer"></div>
         <button id="btn-voz" class="off" onclick="toggleVoz()">🔇 voz</button>
-        <button id="btn-config" onclick="abrirConfig()">⚙ clave Groq</button>
+        <button id="btn-config" onclick="abrirConfig()">⚙ voz</button>
       </div>
     </div>
 
@@ -287,18 +291,13 @@
 
 <div class="modal-bg" id="modal-config">
   <div class="modal">
-    <h3>Clave de Groq (gratis, obligatoria)</h3>
-    <p>Se guarda solo en tu navegador, nunca se sube a ningún lado. Consíguela en 1 minuto en
-      <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> y pégala acá.</p>
-    <input id="input-key" placeholder="gsk_...">
-
-    <h3 style="margin-top:16px">Voz más fluida (ElevenLabs, opcional)</h3>
-    <p>Sin esto, la voz usa el motor del navegador (más robótica). Con una clave de
-      <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank">elevenlabs.io</a> suena más natural.</p>
+    <h3>Voz más fluida (opcional)</h3>
+    <p>Por defecto la voz usa el motor del navegador (más robótica). Si tienes una clave de
+      <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank">elevenlabs.io</a>, pégala acá para que suene más natural. Se guarda solo en tu navegador.</p>
     <input id="input-eleven-key" placeholder="Clave ElevenLabs (opcional)">
     <input id="input-eleven-voice" placeholder="Voice ID (opcional)">
 
-    <button class="enviar" onclick="guardarKey()">Guardar y empezar</button>
+    <button class="enviar" onclick="guardarKey()">Guardar</button>
   </div>
 </div>
 
@@ -388,7 +387,6 @@ function guardarPerfil(){
   localStorage.setItem("alumno_apodo", apodo);
   document.getElementById("modal-perfil").classList.remove("on");
   pintarPerfilChip();
-  if(!getKey()) abrirConfig();
 }
 function pintarPerfilChip(){
   const av = localStorage.getItem("alumno_avatar");
@@ -446,35 +444,32 @@ function addMsg(de, texto, extraClass){
 }
 function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-// ── Groq ──
-function getKey(){ return localStorage.getItem("groq_key") || ""; }
+// ── Groq (vía proxy propio /api/profe-emi, sin pedirle clave al alumno) ──
 function abrirConfig(){
-  document.getElementById("input-key").value = getKey();
   document.getElementById("input-eleven-key").value = getElevenKey();
   document.getElementById("input-eleven-voice").value = localStorage.getItem("elevenlabs_voice_id") || "";
   document.getElementById("modal-config").classList.add("on");
 }
 function cerrarConfig(){ document.getElementById("modal-config").classList.remove("on"); }
 function guardarKey(){
-  const k = document.getElementById("input-key").value.trim();
-  if(!k) return;
-  localStorage.setItem("groq_key", k);
   const ek = document.getElementById("input-eleven-key").value.trim();
   const ev = document.getElementById("input-eleven-voice").value.trim();
   if(ek) localStorage.setItem("elevenlabs_key", ek); else localStorage.removeItem("elevenlabs_key");
   if(ev) localStorage.setItem("elevenlabs_voice_id", ev); else localStorage.removeItem("elevenlabs_voice_id");
   cerrarConfig();
-  if(historial.length === 0) prepararSistema();
 }
 async function llamarGroq(mensajes){
-  const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const resp = await fetch("/api/profe-emi", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getKey() },
-    body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: mensajes, temperature: 0.4 }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mensajes }),
   });
-  if(!resp.ok) throw new Error("Groq HTTP " + resp.status + ": " + (await resp.text()));
+  if(!resp.ok){
+    const data = await resp.json().catch(() => ({}));
+    throw new Error(data.error || ("HTTP " + resp.status));
+  }
   const data = await resp.json();
-  return data.choices[0].message.content;
+  return data.texto;
 }
 
 // ── Voz ──
@@ -559,7 +554,7 @@ async function enviarAlModelo(displayTexto, apiTexto){
     if(exito) marcarExito();
   }catch(err){
     pensando.remove();
-    addMsg("profe", "Se cortó la conexión con Groq: " + err.message);
+    addMsg("profe", "Se cortó la conexión: " + err.message);
     setEstado("Atenta", "#93A0BC", false);
   }
   btnEnviar.disabled = false;
@@ -601,7 +596,6 @@ async function prepararSistema(){
   historial = [{ role: "system", content: SYSTEM_PROMPT }];
 }
 async function empezar(){
-  if(!getKey()){ abrirConfig(); return; }
   fase = "clase";
   renderZona();
   if(historial.length === 0) await prepararSistema();
@@ -621,7 +615,7 @@ async function enviarAlModeloSinBurbujaAlumno(apiTexto){
     hablar(resp);
   }catch(err){
     pensando.remove();
-    addMsg("profe", "No pude conectar con Groq: " + err.message + "\n\nRevisa la clave en ⚙ (arriba a la derecha).");
+    addMsg("profe", "Se cortó la conexión: " + err.message + "\n\nIntenta de nuevo en un momento.");
     setEstado("Atenta", "#93A0BC", false);
   }
   btnEnviar.disabled = false;
@@ -630,7 +624,6 @@ async function enviarAlModeloSinBurbujaAlumno(apiTexto){
 function enviar(){
   const texto = inputEl.value.trim();
   if(!texto) return;
-  if(!getKey()){ abrirConfig(); return; }
   if(fase === "intro") empezar();
   inputEl.value = "";
   enviarAlModelo(texto);
