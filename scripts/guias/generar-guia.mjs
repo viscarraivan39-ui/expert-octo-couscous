@@ -18,12 +18,20 @@ const GUIAS = [
   { folio: "AY-M1-04", numero: 4, tema: "Probabilidad y estadística", preguntas: PROBABILIDAD },
 ].map((g) => ({ ...g, titulo: `Guía ${g.numero} · ${g.tema}`, footer: FOOTER }));
 
+function slug(texto) {
+  return texto
+    .normalize("NFD").replace(/[̀-ͯ]/g, "") // saca tildes/ñ diacrítica
+    .toLowerCase()
+    .replace(/[^\w]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
   const logoBytes = await readFile(path.join(__dirname, "..", "branding", "logo_icono_transp.png"));
   for (const guia of GUIAS) {
     const bytes = await generarGuiaPDF(guia, logoBytes);
-    const file = path.join(OUT_DIR, `guia-${String(guia.numero).padStart(2, "0")}-${guia.tema.toLowerCase().replace(/[^\w]+/g, "-")}.pdf`);
+    const file = path.join(OUT_DIR, `guia-${String(guia.numero).padStart(2, "0")}-${slug(guia.tema)}.pdf`);
     await writeFile(file, bytes);
     console.log("Generada:", file);
   }

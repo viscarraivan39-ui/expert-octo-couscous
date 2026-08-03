@@ -248,10 +248,20 @@
           <div class="consejo" id="consejo-estudio"><b>💡 Consejo de estudio</b><span id="consejo-txt"></span></div>
         </div>
         <div class="tarjeta guias">
-          <h4>📚 Tus guías <span id="nguias">2</span></h4>
+          <h4>📚 Guías para descargar <span id="nguias">4</span></h4>
           <div id="lista-guias">
-            <div class="guia" onclick="abrirGuia('eq-lineales')"><div class="n">Guía · Ecuaciones lineales</div><div class="m">6 ejercicios · Toca para ver</div><div class="bg"><div class="fg" style="width:100%;background:var(--savings)"></div></div></div>
-            <div class="guia" onclick="abrirGuia('mixta')"><div class="n">Guía · Práctica mixta PAES M1</div><div class="m">6 ejercicios · Toca para ver</div><div class="bg"><div class="fg" style="width:38%"></div></div></div>
+            <a class="apoyo-item" href="/guias/guia-01-numeros.pdf" download>
+              <b>Guía 1 · Números</b><span>19 preguntas · PDF con hoja de respuestas</span>
+            </a>
+            <a class="apoyo-item" href="/guias/guia-02-algebra-y-funciones.pdf" download>
+              <b>Guía 2 · Álgebra y funciones</b><span>18 preguntas · PDF con hoja de respuestas</span>
+            </a>
+            <a class="apoyo-item" href="/guias/guia-03-geometria.pdf" download>
+              <b>Guía 3 · Geometría</b><span>14 preguntas · PDF con hoja de respuestas</span>
+            </a>
+            <a class="apoyo-item" href="/guias/guia-04-probabilidad-y-estadistica.pdf" download>
+              <b>Guía 4 · Probabilidad y estadística</b><span>14 preguntas · PDF con hoja de respuestas</span>
+            </a>
           </div>
         </div>
         <div class="tarjeta apoyo">
@@ -310,18 +320,6 @@
     <div class="avatares" id="avatares-lista"></div>
     <input id="input-apodo" placeholder="Tu apodo (ej: Maxi)">
     <button class="enviar" onclick="guardarPerfil()">Guardar y empezar</button>
-  </div>
-</div>
-
-<div class="modal-bg" id="modal-guia">
-  <div class="modal" style="max-width:520px">
-    <h3 id="guia-titulo">Guía</h3>
-    <p id="guia-desc"></p>
-    <ol id="guia-lista" style="padding-left:20px;font-size:13.5px;line-height:1.6;color:var(--text);margin-bottom:14px"></ol>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="enviar" onclick="descargarGuia()">⬇ Descargar (.txt)</button>
-      <button class="enviar" style="background:var(--panel2);color:var(--dim)" onclick="cerrarGuia()">Cerrar</button>
-    </div>
   </div>
 </div>
 
@@ -679,109 +677,9 @@ function extraerMarcadores(resp){
 function marcarExito(){
   fase = "practica";
   renderZona();
-  const g = document.createElement("div");
-  g.className = "guia nueva nuevo";
-  g.onclick = () => abrirGuia("mixta");
-  g.innerHTML = `<div class="n">Refuerzo · ${escapeHtml(ejercicioActual.tema)}</div><div class="m">6 ejercicios · Nueva — toca para ver</div><div class="bg"><div class="fg" style="width:0%"></div></div>`;
-  document.getElementById("lista-guias").prepend(g);
-  document.getElementById("nguias").textContent = "3";
   if(window.matchMedia("(max-width: 768px)").matches){
     setTimeout(() => verTab("gu"), 900);
   }
-}
-
-// ── Guías descargables (contenido original estilo PAES M1, no ensayos reales) ──
-const GUIAS = {
-  "eq-lineales": {
-    titulo: "Guía · Ecuaciones lineales",
-    desc: "6 problemas de modelamiento algebraico — plantea la ecuación de cada uno antes de resolver.",
-    problemas: [
-      "Un notebook cuesta $450.000 más que una tablet. Juntos cuestan $890.000. ¿Cuánto cuesta el notebook?",
-      "En un curso hay 8 mujeres más que hombres. En total son 32 alumnos. ¿Cuántas mujeres hay?",
-      "Un número aumentado en 15 es igual al triple del mismo número. ¿Cuál es el número?",
-      "La suma de tres números consecutivos es 72. ¿Cuáles son los números?",
-      "Ana tiene el triple de dinero que Luis. Entre los dos tienen $48.000. ¿Cuánto tiene cada uno?",
-      "Un padre tiene el cuádruple de la edad de su hijo. En 5 años, la suma de sus edades será 70. ¿Qué edad tiene el padre hoy?",
-    ],
-  },
-  "mini-ensayo-demre": {
-    titulo: "Guía · Mini Ensayo 1 Matemática (Recopilación DEMRE)",
-    desc: "35 preguntas de alternativas, recopilación de ítems oficiales DEMRE vía @pdt.lumbumba. Repaso variado: fracciones, porcentajes, potencias, ecuaciones, funciones, geometría y vectores. Algunas incluyen una figura del documento original.",
-    problemas: [
-      "1. ¿Cuál(es) de las siguientes operaciones da(n) como resultado el número 2?\nI) 6/7 · 14/6   II) 22/5 : 5/11   III) 10/4 − 2/4\nA) Solo I  B) Solo II  C) Solo III  D) Solo I y III  E) I, II y III",
-      "2. Un paquete de 24 rollos de papel higiénico de 50 metros cada uno cuesta $7.440. ¿Cuál expresión representa el valor de 1 metro de dicho papel, en pesos?\nA) 7.440/24  B) 7.440/50  C) 7.440/(24·50)  D) (7.440/24)·50  E) (7.440/50)·24",
-      "3. Erika pide un préstamo de $180.000 para pagarlo en 12 cuotas mensuales iguales. La financiera calcula el interés anual = 180.000 · 20/100. ¿Cuánto paga Erika solo por interés en cada cuota?\nA) $3.000  B) $15.000  C) $18.000  D) $183.000",
-      "4. Si P=√20, Q=5√4, R=3√8 y S=8√2, ¿cuál relación es verdadera?\nA) P<R=S<Q  B) R<P<S<Q  C) P<R<Q<S  D) S<Q<R<P  E) Q=P<S<R",
-      "5. ¿Qué porcentaje es (a+b) de a·b?\nA) (a+b)/(a·b) %  B) 100(a+b)/(a·b) %  C) 100·a·b/(a+b) %  D) a·b(a+b)/100 %",
-      "6. 200 estudiantes responden una prueba y el 10% responde erróneamente la pregunta 15. ¿Cuántos la contestan correctamente?\nA) 10  B) 20  C) 160  D) 180",
-      "7. log(base 1/2) de √2 =\nA) −1/2  B) 2  C) 1/2  D) ⁴√2  E) −√(1/2)",
-      "8. Si 3^m=p y 8^b=q (m, b enteros), ¿qué expresión equivale a (3^(m+1)·8^(b+1))⁻¹?\nA) 1/(pq+1)  B) 1/(24pq)  C) 24pq  D) −24pq  E) −(pq+2)",
-      "9. Si p<q (reales), ¿cuál afirmación es SIEMPRE verdadera?\nA) √(p²−q²)=p−q  B) ∛(p−q) no es real  C) √p+√q=√(p+q)  D) √(−p−q) no es real  E) ∛p<∛q",
-      "10. Si b=log₂(a), ¿cuál(es) afirmación(es) es (son) verdadera(s)?\nI) Si 0<a<1, entonces b<0  II) Si b>1, entonces a>2  III) Si a=√32, entonces b=2,5\nA) Solo I  B) Solo I y II  C) Solo I y III  D) Solo II y III  E) I, II y III",
-      "11. Una pelota se deja caer desde altura A; en cada rebote alcanza 2/3 de la altura del rebote anterior. Para saber la altura al décimo rebote, ¿qué se necesita?\n(1) la altura inicial A  (2) la altura del tercer rebote\nA) (1) por sí sola  B) (2) por sí sola  C) Ambas juntas  D) Cada una por sí sola  E) Se requiere información adicional",
-      "12. Si Ana tiene hoy (2a−3) años, ¿qué edad tendrá en 4 años más?\nA) (2a+1) años  B) (2a−7) años  C) (6a+1) años  D) (8a−12) años",
-      "13. Calíope reduce 2(2x−5)²−10(2x+3) en 4 pasos y comete un error. Paso 1: =2(2x−5)²−20x+30. Paso 2: =2(4x²−20x+25)−20x+30. Paso 3: =8x²−40x+50−20x+30. Paso 4: =8x²−60x+80. ¿En qué paso está el error?\nA) Paso 1  B) Paso 2  C) Paso 3  D) Paso 4",
-      "14. Un rectángulo de lados a cm y b cm tiene área 48 cm². Si a²+b²=100 cm², ¿cuál es (a+b)?\nA) 2  B) 10  C) 14  D) √52  E) √148",
-      "15. Las 3/4 partes de una carretera están pavimentadas. Faltan (p−10) km. ¿Cuál es la longitud total en función de p?\nA) (4p−10)/3 km  B) (4p−40) km  C) (4p−10) km  D) (4p−40)/3 km  E) Ninguna de las anteriores",
-      "16. (incluye figura) Una bandera tiene franjas verde, amarilla y azul, ancho total 85 cm. El ancho amarillo es el doble del azul, y el verde es 15 cm menor que el azul. ¿Cuál es el ancho de la franja amarilla?\nA) 50 cm  B) 40 cm  C) 35 cm  D) 25 cm",
-      "17. En ax+b=c (a,b,c enteros positivos, b<c), ¿qué condición da una solución NO entera?\nA) a=1  B) a+b=c  C) c=2b y a=b  D) (c−b) es múltiplo de a  E) c<a+b",
-      "18. La ingesta mínima de calcio recomendada es 1.000 mg/día. 1 taza de leche (250 ml) aporta 280 mg; 1 vaso de jugo (200 ml) aporta 50 mg. Miguel toma 1 taza de leche y N vasos de jugo. ¿Qué inecuación determina los N que cumplen la ingesta?\nA) 280+50/N≥1.000  B) (280+50)N≤1.000  C) 280N+50≥1.000  D) 280+50N≥1.000",
-      "19. La tarifa eléctrica es T=Px+C. Para una tarifa entre $15.000 y $70.000, ¿qué desigualdad representa los valores posibles del consumo x?\nA) P(15.000−C)<x<P(70.000−C)  B) 15.000/P−C<x<70.000/P−C  C) (15.000−C)/P<x<(70.000−C)/P  D) 15.000/P+C<x<70.000/P+C  E) (15.000+C)/P<x<(70.000+C)/P",
-      "20. ¿Cuáles son p y q si −4p+5q=9 y −p−q=9?\nA) −33/2 y 15/2  B) −6 y −3  C) −6 y −15  D) −6/4 y −27/4  E) −11 y 2",
-      "21. La edad de un padre (p) menos la de su hijo (h) es 30 años; en 2 años más el padre tendrá el triple de la edad del hijo. ¿Qué sistema representa esto?\nA) p−h=30 ; p+2=3(h+2)  B) p=h−30 ; p+2=h/3+2  C) p−h=30 ; p/3+2=h+2  D) p=h−30 ; p+2=3h+2  E) p−h=30 ; 3(p+2)=h+2",
-      "22. ¿Con cuál ecuación junto a 3x−y=p se forma un sistema que podría NO tener solución, según p?\nA) x=0  B) x−y=p  C) 6x−2y=p  D) 2y−6x=−2p  E) 3x+y=p",
-      "23. Empresas A: y=ax+750, B: y=bx+500 (0<a<b). ¿Cuál(es) afirmación(es) es (son) verdadera(s)?\nI) Con consumo 250/(b−a) kWh, ambas cobran lo mismo.  II) Si b=a+250, la tarifa es la misma.  III) Sin cargo fijo en B, B siempre convendría más que A.\nA) Solo I  B) Solo II  C) Solo III  D) Solo I y III  E) Solo II y III",
-      "24. (incluye figura) Una piscina rectangular de 4 m × 10 m tiene un borde de pasto de ancho x m. El área total (piscina + borde) es 112 m². ¿Qué ecuación permite hallar x?\nA) x²+40=112  B) x²+14x=72  C) 2x²+7x=18  D) x²+7x=18  E) 4x²+40=112",
-      "25. ¿Para qué valores de c la ecuación x²+5x−c=0 NO tiene solución real?\nA) ]25/4, ∞[  B) ]−25/4, ∞[  C) ]−∞, 25/4[  D) ]−∞, −25/4[  E) ∅ (conjunto vacío)",
-      "26. (incluye figura/gráficos — ver documento original) Una tarifa telefónica tiene cargo fijo $9.000 + $50 por minuto, modelada por f(x)=mx+n en los primeros 240 minutos. ¿Cuál gráfico representa mejor a f?",
-      "27. (incluye figura) Un arriendo de auto cobra $70.000 a los 50 km y $120.000 a los 100 km, modelado por f(x)=mx+n. ¿Cuál es el cobro a los 200 km?\nA) $200.000  B) $220.000  C) $240.000  D) $280.000",
-      "28. La parábola de una función cuadrática pasa por (−2,0), (6,0) y (0,12). ¿Cuál(es) afirmación(es) es (son) verdadera(s)?\nI) El eje de simetría es x=2.  II) Si −2<x<6, entonces f(x)<0.  III) f(7)=f(−3)\nA) Solo I  B) Solo II  C) Solo III  D) Solo I y II  E) Solo I y III",
-      "29. En un paralelepípedo recto, el largo de la base es 10 cm mayor que el ancho y la altura es 60 cm. Si x es el largo, ¿qué función (dominio x>10) modela el volumen en cm³?\nA) f(x)=60x²−600  B) g(x)=60x²+600  C) h(x)=60x²−600x  D) j(x)=60x²−10x  E) t(x)=600x²",
-      "30. Para f(x)=−20+15x+5x² (dominio los reales), ¿cuál(es) afirmación(es) es (son) verdadera(s)?\nI) Corta al eje x en (−4,0) y (1,0).  II) Su eje de simetría es x=−3/2.  III) Su valor máximo es −25/4.\nA) Solo I  B) Solo II  C) Solo I y II  D) Solo I y III  E) I, II y III",
-      "31. (incluye figura) Un arco de flores parabólico sigue f(x)=−x². ¿Qué distancia debe haber entre las bases para que la altura máxima sea 2 m?\nA) √2 m  B) 2√2 m  C) 2 m  D) 4 m",
-      "32. Para f(x)=mx+n (dominio los reales), ¿se puede determinar n si se conoce...?\n(1) el punto de intersección con el eje y  (2) la pendiente y un punto de la gráfica\nA) (1) por sí sola  B) (2) por sí sola  C) Ambas juntas  D) Cada una por sí sola  E) Se requiere información adicional",
-      "33. Dados u=(2,−1), v=(−8,5), w=(−5,−3), ¿cuál vector corresponde a (2u−v+3w)?\nA) (−3,−6)  B) (−3,1)  C) (−3,−16)  D) (−19,−6)  E) (−19,−16)",
-      "34. (incluye figura) En una circunferencia de radio 1 con B y C en ella, la altura OA del triángulo CBO mide √3/2. Sobre rotaciones en torno a O, ¿cuál(es) afirmación(es) es (son) verdadera(s)?\nI) Girando 30°, B queda en (1,0).  II) Girando 60°, B queda en (√3/2, −1/2).  III) Girando 60°, C queda en (0,−1).\nA) Solo I  B) Solo I y II  C) Solo I y III  D) Solo II y III  E) I, II y III",
-      "35. Emilia está en (a,b) y Martín en (c,d) (todos positivos y distintos). Se aplica: rotar 90° antihorario, luego simetría respecto al eje x, luego simetría respecto al eje y. ¿Qué afirmación es verdadera?\nA) Al rotar, ambos quedan en el cuarto cuadrante.  B) Terminan en (a,−b) y (c,−d).  C) La distancia entre ambos al terminar es la misma que al comenzar.  D) Terminan en el tercer cuadrante.",
-    ],
-  },
-  mixta: {
-    titulo: "Guía · Práctica mixta PAES M1",
-    desc: "6 problemas variados (números, geometría, probabilidad, funciones) para practicar más allá del álgebra.",
-    problemas: [
-      "Un pantalón tiene un descuento del 20% y queda en $24.000. ¿Cuál era el precio original?",
-      "El perímetro de un rectángulo es 60 cm y el largo es el doble del ancho. ¿Cuáles son sus dimensiones?",
-      "En una bolsa hay 5 bolitas rojas y 3 azules. Si se saca una al azar, ¿cuál es la probabilidad de que sea roja?",
-      "Un plan de celular cobra $5.000 fijos más $50 por minuto hablado. Si la boleta fue de $9.000, ¿cuántos minutos se hablaron?",
-      "Dos ciudades están a 300 km. Un auto viaja a velocidad constante y demora 4 horas. ¿Cuál es su velocidad?",
-      "En una votación de curso, los votos por Camila son el doble de los votos por Pedro. Entre los dos suman 33 votos. ¿Cuántos votos tiene cada uno?",
-    ],
-  },
-};
-let guiaActualId = null;
-
-function abrirGuia(id){
-  const g = GUIAS[id];
-  if(!g) return;
-  guiaActualId = id;
-  document.getElementById("guia-titulo").textContent = g.titulo;
-  document.getElementById("guia-desc").textContent = g.desc;
-  document.getElementById("guia-lista").innerHTML = g.problemas.map(p => `<li>${escapeHtml(p)}</li>`).join("");
-  document.getElementById("modal-guia").classList.add("on");
-}
-function cerrarGuia(){ document.getElementById("modal-guia").classList.remove("on"); }
-function descargarGuia(){
-  const g = GUIAS[guiaActualId];
-  if(!g) return;
-  const texto = `${g.titulo}\nAvíspateYa.cl — Profe Emi\n\n${g.desc}\n\n` +
-    g.problemas.map((p, i) => `${i + 1}. ${p}`).join("\n\n");
-  const blob = new Blob([texto], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = g.titulo.replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-").toLowerCase() + ".txt";
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function otroEjercicio(){
