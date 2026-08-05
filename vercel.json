@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    { "source": "/profe-emi.html", "destination": "https://profeemi.cl", "permanent": true },
+    { "source": "/api/profe-emi", "destination": "https://profeemi.cl", "permanent": true },
+    { "source": "/api/profe-emi-voz", "destination": "https://profeemi.cl", "permanent": true },
+    { "source": "/api/omr", "destination": "https://profeemi.cl", "permanent": true },
+    { "source": "/api/guia-personalizada", "destination": "https://profeemi.cl", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/resenas", "destination": "/api/resenas" }
   ],
@@ -9,7 +16,8 @@
   "functions": {
     "api/cron/fetch-destacado.js": { "maxDuration": 30 },
     "api/omr.js": { "maxDuration": 30 },
-    "api/guia-personalizada.js": { "maxDuration": 30 }
+    "api/guia-personalizada.js": { "maxDuration": 30 },
+    "api/profe-emi-voz.js": { "maxDuration": 15 }
   },
   "headers": [
     {

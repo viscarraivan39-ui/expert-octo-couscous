@@ -47,6 +47,15 @@ const SEARCH_TERMS = [
   { term: 'perfume mujer', cat: 'moda' },
 ];
 
+// Timeout explícito (checklist-10-etapas, auditoría 2026-08-05) — sin esto
+// una llamada colgada a Mercado Libre deja corriendo la función sin control
+// propio hasta que Vercel la corta por su cuenta.
+function fetchConTimeout(url, opts, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...opts, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
 function formatCLP(n) {
   return Math.round(n).toLocaleString('es-CL');
 }
@@ -74,7 +83,7 @@ async function getMercadoLibreToken() {
     throw new Error('Faltan ML_CLIENT_ID / ML_CLIENT_SECRET en las variables de entorno.');
   }
 
-  const resp = await fetch('https://api.mercadolibre.com/oauth/token', {
+  const resp = await fetchConTimeout('https://api.mercadolibre.com/oauth/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -101,7 +110,7 @@ async function getMercadoLibreToken() {
 
 async function fetchMLTerm(token, term, cat) {
   const url = `https://api.mercadolibre.com/sites/${ML_SITE}/search?q=${encodeURIComponent(term)}&limit=15`;
-  const resp = await fetch(url, {
+  const resp = await fetchConTimeout(url, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!resp.ok) {

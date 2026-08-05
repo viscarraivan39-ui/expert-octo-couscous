@@ -41,7 +41,11 @@ function renderArticulo(d, i) {
 </article>`;
 }
 
+import { rateLimit } from '../lib/rateLimit.js';
+
 export default async function handler(req, res) {
+  if (!(await rateLimit(req, res))) return;
+
   const KV_URL = process.env.KV_REST_API_URL;
   const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 

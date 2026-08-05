@@ -26,6 +26,15 @@
 const MAX_HISTORY = 30;
 const RECENT_AVOID = 10; // no repetir un producto que salió en los últimos N destacados
 
+// Timeout explícito (checklist-10-etapas, auditoría 2026-08-05) — sin esto
+// un Groq/NVIDIA colgado deja corriendo la función hasta el maxDuration:30
+// de vercel.json sin ningún control propio ni mensaje claro en los logs.
+function fetchConTimeout(url, opts, timeoutMs = 25000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...opts, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
 function parseDiscount(off) {
   if (!off) return 0;
   const n = parseInt(String(off).replace(/[^0-9-]/g, ''), 10);
@@ -103,7 +112,7 @@ function parseJson(text) {
 }
 
 async function writeWithGroq(prompt) {
-  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const resp = await fetchConTimeout('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -121,7 +130,7 @@ async function writeWithGroq(prompt) {
 }
 
 async function writeWithNvidia(prompt) {
-  const resp = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+  const resp = await fetchConTimeout('https://integrate.api.nvidia.com/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
