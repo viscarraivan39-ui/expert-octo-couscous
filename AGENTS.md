@@ -33,6 +33,7 @@ serverless en Vercel (plan **Hobby**) + Vercel KV. Proyecto Vercel `prj_twJCuA1c
 - `api/cron/fetch-destacado` lo dispara cron-job.org 1×día con `?key=ADMIN_KEY`.
 - Variables de entorno solo en Vercel: `GROQ_API_KEY`, `NVIDIA_API_KEY`, `KV_REST_API_URL`,
   `KV_REST_API_TOKEN`, `CRON_SECRET`, `ADMIN_KEY`.
+- **Código de servidor solo en `lib/`, `scripts/`, `sql/`**, bloqueadas al público por `redirects` en `vercel.json`; una carpeta nueva de ese tipo se agrega ahí (BUG-007).
 
 ## Cómo verificar
 - Cambios en `index.html` o scripts del cliente: abrir la página y revisar la consola (un error

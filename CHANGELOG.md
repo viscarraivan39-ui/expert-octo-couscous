@@ -4,6 +4,7 @@ Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
 ## 2026-09-29
+- **Código de servidor oculto**: `/lib/`, `/scripts/` y `/sql/` ya no se sirven al público (BUG-007).
 - **IA con respaldo** en Producto Destacado (`f67f5c6`). Por qué: modelo retirado (BUG-006).
 - **Mercado Libre automático desconectado** + build arreglado (`0ffd029`). Por qué: ML respondía
   403 desde julio y el deploy fallaba por una función inexistente (BUG-001, BUG-002).
