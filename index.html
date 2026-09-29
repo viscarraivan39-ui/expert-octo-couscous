@@ -281,7 +281,6 @@
 </section>
 
 <div class="trust">
-  <div><b id="trust-auto">0</b><span>ofertas automáticas (sin comisión)</span></div>
   <div><b id="trust-manual">0</b><span>ofertas verificadas manualmente</span></div>
   <div><b>100%</b><span>precios reales confirmados</span></div>
 </div>
@@ -306,8 +305,8 @@
       <p>Revisamos el historial de precios de cada producto en Mercado Libre y otras tiendas chilenas. Una oferta solo entra al sitio si el precio actual está realmente por debajo de su promedio reciente — no comparamos contra un "precio de lista" inflado que la misma tienda nunca cobró.</p>
     </div>
     <div class="metodo__item">
-      <div class="num-row"><span class="num">02</span><span class="line"></span><h4>Verificación manual y automática</h4></div>
-      <p>Las ofertas marcadas <b>"verificada manualmente"</b> las revisamos a mano antes de publicarlas. Las marcadas <b>"automática"</b> vienen del catálogo de la tienda sin nuestra revisión caso por caso — por eso separamos ambas categorías en vez de mezclarlas.</p>
+      <div class="num-row"><span class="num">02</span><span class="line"></span><h4>Verificación manual</h4></div>
+      <p>Cada oferta la revisamos a mano antes de publicarla: precio, descuento real y que el link lleve al producto correcto.</p>
     </div>
     <div class="metodo__item">
       <div class="num-row"><span class="num">03</span><span class="line"></span><h4>Sin comisión oculta al comprador</h4></div>
@@ -449,22 +448,11 @@ function ordenarOfertas(lista) {
   return copia;
 }
 
-// Trae las ofertas automáticas de Mercado Libre desde nuestra base de datos
-// (las actualiza el cron todos los días) y las agrega a las manuales.
-async function loadAutoOffers() {
-  try {
-    const res = await fetch('/api/offers');
-    const data = await res.json();
-    const autoOffers = data.offers || [];
-    allOffers = [...PRODUCTS_CHILE_MANUAL, ...autoOffers, ...PRODUCTS_INTL];
-    filteredOffers = currentFilter === 'all' ? allOffers :
-      currentFilter === 'internacional' ? allOffers.filter(o => o.country === 'internacional') :
-      allOffers.filter(o => o.cat === currentFilter);
-    renderOffers();
-  } catch (err) {
-    console.error('No se pudieron cargar ofertas automáticas:', err);
-    renderOffers();
-  }
+// Muestra el catálogo curado. Las ofertas automáticas de Mercado Libre (cron +
+// /api/offers) se desconectaron en sep-2026: la API de ML respondía 403 desde julio.
+function mostrarCatalogo() {
+  allOffers = [...PRODUCTS_CHILE_MANUAL, ...PRODUCTS_INTL];
+  renderOffers();
 }
 
 function getSearchTerm() {
@@ -487,7 +475,6 @@ function renderOffers() {
 
   document.getElementById('chile-count').textContent = `${chileOffers.length} ofertas`;
   document.getElementById('intl-count').textContent = intlOffers.length > 0 ? `${intlOffers.length} ofertas` : 'Próximamente';
-  document.getElementById('trust-auto').textContent = filteredOffers.filter(o => o.source === 'auto').length;
   document.getElementById('trust-manual').textContent = filteredOffers.filter(o => o.source === 'manual').length;
 
   updateHeroOffer();
@@ -659,7 +646,7 @@ document.getElementById('subscribeForm').addEventListener('submit', async (e) =>
     },
     {
       keywords: ['cada cuanto', 'frecuencia', 'se actualiza'],
-      reply: 'Las ofertas manuales se revisan cada 2-3 días, y las automáticas de Mercado Libre se actualizan solas todos los días.',
+      reply: 'Las ofertas se revisan a mano cada 2-3 días.',
     },
     {
       keywords: ['suscri', 'correo', 'notificacion', 'aviso'],
@@ -797,8 +784,7 @@ async function loadDestacado() {
 loadDestacado();
 
 // Carga el catálogo curado desde /data/productos.json (antes vivía hardcodeado
-// acá mismo) y recién después trae las ofertas automáticas, para no pisar
-// PRODUCTS_CHILE_MANUAL con una lista vacía en la primera renderización.
+// acá mismo) y recién después lo muestra, para no renderizar una lista vacía.
 async function loadManualProducts() {
   try {
     const res = await fetch('/data/productos.json');
@@ -806,7 +792,7 @@ async function loadManualProducts() {
   } catch (err) {
     console.error('No se pudo cargar el catálogo de productos:', err);
   }
-  loadAutoOffers();
+  mostrarCatalogo();
 }
 loadManualProducts();
 </script>

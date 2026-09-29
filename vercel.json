@@ -9,15 +9,10 @@
   "rewrites": [
     { "source": "/resenas", "destination": "/api/resenas" }
   ],
-  "crons": [{
-    "path": "/api/cron/fetch-offers",
-    "schedule": "0 13 * * *"
-  }],
   "functions": {
     "api/cron/fetch-destacado.js": { "maxDuration": 30 },
     "api/omr.js": { "maxDuration": 30 },
-    "api/guia-personalizada.js": { "maxDuration": 30 },
-    "api/profe-emi-voz.js": { "maxDuration": 15 }
+    "api/guia-personalizada.js": { "maxDuration": 30 }
   },
   "headers": [
     {
