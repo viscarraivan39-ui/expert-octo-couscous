@@ -3,6 +3,13 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-10-27
+- **Sync catálogo manual** (`5ab1ea7`): se comparó la hoja de Google Sheets contra
+  `data/productos.json` (57 productos en ambos, mismo orden). Único cambio real: el
+  link de afiliado de "Freidora Electrica Eoland" estaba mal tipeado en el sync
+  anterior (`meli.la/1cjZa1X` en vez de `meli.la/1ciZa1X` de la hoja). Se corrigió.
+  Se preservó el campo `masVendido` del Notebook Hp (no viene de la hoja).
+
 ## 2026-09-29
 - **Código de servidor oculto**: `/lib/`, `/scripts/` y `/sql/` ya no se sirven al público (BUG-007).
 - **IA con respaldo** en Producto Destacado (`f67f5c6`). Por qué: modelo retirado (BUG-006).
