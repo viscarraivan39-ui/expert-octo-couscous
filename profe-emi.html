@@ -622,6 +622,25 @@ async function hablarElevenLabs(texto){
   await audio.play();
 }
 
+// Edge TTS servido desde nuestro backend (/api/profe-emi-voz) — misma voz
+// (es-CL-CatalinaNeural) y ajustes ya validados en los videos. Es el
+// default: gratis, sin pedirle clave al alumno, más natural que la voz
+// nativa del navegador (que se usa solo como último recurso si esto falla).
+async function hablarEdgeTTS(texto){
+  const resp = await fetch("/api/profe-emi-voz", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ texto }),
+  });
+  if(!resp.ok) throw new Error("Voz Edge TTS HTTP " + resp.status);
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  audio.onplay = () => setEstado("Hablando", "#14B8A6", true);
+  audio.onended = () => { setEstado("Explicando", "#14B8A6", false); URL.revokeObjectURL(url); };
+  await audio.play();
+}
+
 function hablarNavegador(texto){
   if(!("speechSynthesis" in window)) return;
   speechSynthesis.cancel();
@@ -638,8 +657,10 @@ async function hablar(texto){
   if(!vozActiva) return;
   if(getElevenKey()){
     try{ await hablarElevenLabs(texto); return; }
-    catch(err){ console.warn("ElevenLabs falló, uso voz del navegador:", err.message); }
+    catch(err){ console.warn("ElevenLabs falló, pruebo Edge TTS:", err.message); }
   }
+  try{ await hablarEdgeTTS(texto); return; }
+  catch(err){ console.warn("Edge TTS falló, uso voz del navegador:", err.message); }
   hablarNavegador(texto);
 }
 

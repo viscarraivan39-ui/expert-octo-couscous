@@ -9,7 +9,8 @@
         {
           "nombre": "Sofía",
           "rol": "Protagonista, empleada humilde de Avispateya",
-          "personalidad": "Diligente y leal"
+          "personalidad": "Diligente y leal",
+          "descripcionVisual": "anthropomorphic wasp woman, warm reddish-brown and cream striped exoskeleton, humble simple work uniform with an AvíspateYa badge, soft round eyes, modest ponytail-like antennae"
         },
         {
           "nombre": "Avispón Fernández",
@@ -94,13 +95,14 @@
         }
       ],
       "totalCapitulosPlan": 80,
-      "resumenAcumulado": "La historia sigue a Sofía, una empleada humilde, quien se casa por conveniencia con Avispón Fernández, el dueño secreto de la empresa. A medida que pasan los días, Sofía comienza a desarrollar sentimientos reales hacia Avispón. La familia Reina Abeja intenta separarlos y exponer su matrimonio como una farsa. Avispa Dorada se convierte en la aliada de Sofía en su lucha por mantener su relación y descubrir la verdad sobre la herencia de la empresa. Sofía y Avispón se casan y comienzan a conocerse, explorando los desafíos y las oportunidades que su relación les presenta. Reina Abeja descubre el comprobante de la transferencia bancaria que prueba que Sofía aceptó casarse con Avispón a cambio de dinero para pagar una deuda médica urgente de su madre. Reina Abeja confronta a Sofía y Avispón con el comprobante, amenazando con exponer su secreto. Avispón se enfrenta a Reina Abeja, defendiendo su relación con Sofía, y Reina Abeja revela que tiene una sorpresa adicional que cambiará todo.",
+      "resumenAcumulado": "Sofía, empleada humilde de la empresa, se casó por conveniencia con Avispón Fernández, dueño secreto de la empresa. Con el tiempo, Sofía desarrolló sentimientos reales por Avispón Fernández. La familia Reina Abeja descubrió que el matrimonio fue pagado y usaron esa prueba para presionar a la pareja. Avispón Fernández tiene un hijo secreto con una mujer de la familia Reina Abeja, lo que pone en peligro su matrimonio y su legado. La familia Reina Abeja comienza a interferir en la relación de Sofía y Avispón Fernández, y Sofía descubre que están detrás de una campaña para dañar la reputación de Avispón Fernández y la empresa. La familia Reina Abeja planea una reunión con los inversionistas de la empresa para exponer a Avispón Fernández y su matrimonio con Sofía. Sofía y Avispón Fernández se preparan para la reunión con los inversionistas, mientras la familia Reina Abeja intenta sabotear su relación. La reunión con los inversionistas comienza y Avispón Fernández revela un secreto que cambia el curso de la reunión.",
       "vocesAsignadas": {
         "Avispón Fernández": "es-US-Chirp3-HD-Fenrir",
         "Avispa Dorada": "es-US-Chirp3-HD-Laomedeia",
         "Reina Abeja": "es-US-Chirp3-HD-Zephyr",
         "Sofía": "es-US-Chirp3-HD-Leda",
-        "Narrador": "es-US-Chirp3-HD-Puck"
+        "Narrador": "es-US-Chirp3-HD-Puck",
+        "Un inversionista": "es-US-Chirp3-HD-Sadachbia"
       },
       "capitulos": [
         {
@@ -186,6 +188,133 @@
               "El capítulo no resuelve el cliffhanger pendiente sobre la sorpresa que Reina Abeja tiene preparada para Avispón",
               "Reina Abeja sigue actuando según su rol de antagonista, pero la amenaza del sobre no se desarrolla como se esperaba",
               "El hecho de que Sofía comience a desarrollar sentimientos hacia Avispón ya fue establecido en capítulos anteriores, no es un desarrollo nuevo en este capítulo"
+            ]
+          }
+        },
+        {
+          "numero": 7,
+          "resumenCapitulo": "Reina Abeja revela el secreto de Avispón Fernández, poniendo en peligro su matrimonio con Sofía. Avispón se enfrenta a Reina Abeja y defiende su relación con Sofía. Mientras tanto, Sofía comienza a desarrollar sentimientos reales hacia Avispón.",
+          "cliffhangerCierre": "El hijo secreto de Avispón Fernández con una mujer de la familia Reina Abeja pone en peligro su matrimonio con Sofía",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep7",
+          "generadoEn": "2026-08-03T21:05:43.344Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve completamente el cliffhanger pendiente, ya que introduce un nuevo elemento (el hijo secreto de Avispón) sin resolver la amenaza de Reina Abeja de exponer el secreto del matrimonio de conveniencia.",
+              "La personalidad de Avispón Fernández parece inconsistentente, ya que en un momento defiende su relación con Sofía y en otro se muestra preocupado por el pasado y el posible futuro de su hijo, lo que podría ser coherente pero requiere una mayor profundización en su caracterización para evitar contradicciones.",
+              "No se observan contradicciones directas con la sinopsis o el resumen acumulado, pero la introducción del hijo secreto agrega una capa de complejidad que debería ser coherente con el desarrollo de la trama y los personajes establecidos hasta el momento."
+            ]
+          }
+        },
+        {
+          "numero": 8,
+          "resumenCapitulo": "Sofía se entera de que Avispón Fernández tiene un hijo secreto con una mujer de la familia Reina Abeja, lo que pone en peligro su matrimonio. Avispón intenta explicarle la situación a Sofía, pero ella se siente traicionada y confundida. Mientras tanto, Avispa Dorada intenta ayudar a Sofía a descubrir la verdad sobre la herencia de la empresa.",
+          "cliffhangerCierre": "Sofía decide investigar más a fondo sobre el hijo secreto de Avispón y su relación con la familia Reina Abeja, lo que podría llevar a una confrontación dramática",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep8",
+          "generadoEn": "2026-08-03T21:11:10.059Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente de manera satisfactoria, ya que Avispón Fernández promete revelar la verdad sobre su hijo secreto pero no se muestra la revelación completa.",
+              "La personalidad de Avispón Fernández parece inconsistente, ya que por un lado defiende su relación con Sofía, pero por otro lado, se muestra reticente a revelar la verdad sobre su hijo secreto.",
+              "No se menciona a Avispa Dorada en el diálogo del capítulo, lo que contradice el resumen que el guionista dice que quedó, donde se indica que Avispa Dorada intenta ayudar a Sofía a descubrir la verdad sobre la herencia de la empresa."
+            ]
+          }
+        },
+        {
+          "numero": 9,
+          "resumenCapitulo": "Sofía decide investigar más a fondo sobre el hijo secreto de Avispón y su relación con la familia Reina Abeja, lo que la lleva a descubrir información impactante. Avispón intenta explicar su situación a Sofía, pero ella se siente herida y traicionada. A medida que avanzan en su conversación, Avispa Dorada los interrumpe con noticias inesperadas que cambian el curso de la discusión.",
+          "cliffhangerCierre": "Sofía descubre un documento que sugiere que el hijo de Avispón puede tener derechos sobre la herencia de la empresa, lo que plantea una nueva amenaza para su relación y el futuro de la compañía.",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep9",
+          "generadoEn": "2026-08-03T21:19:11.157Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve completamente el cliffhanger pendiente, ya que Sofía decide investigar más a fondo sobre el hijo secreto de Avispón, pero el capítulo se centra más en la conversación entre Sofía y Avispón sobre su situación y la intervención de Avispa Dorada con noticias inesperadas.",
+              "Avispón Fernández actúa de forma contradictoria al decir que está tratando de proteger a su hijo y a la empresa, pero anteriormente se reveló que tiene un hijo secreto con una mujer de la familia Reina Abeja, lo que pone en duda su sinceridad y coherencia en sus acciones.",
+              "No se presenta una contradicción directa con la sinopsis o el resumen acumulado, pero la trama del capítulo se desvía ligeramente del curso esperado, enfocándose más en la dinámica entre los personajes que en la investigación sobre el hijo secreto y su relación con la familia Reina Abeja."
+            ]
+          }
+        },
+        {
+          "numero": 10,
+          "resumenCapitulo": "Sofía descubre un documento que sugiere que el hijo de Avispón puede tener derechos sobre la herencia de la empresa. A medida que investiga más a fondo, se siente cada vez más traicionada por Avispón. La relación entre Sofía y Avispón se vuelve cada vez más tensa.",
+          "cliffhangerCierre": "La relación entre Sofía y Avispón está al borde del colapso, y el futuro de la empresa está en juego.",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep10",
+          "generadoEn": "2026-08-03T21:30:00.552Z",
+          "chequeoContinuidad": {
+            "ok": true,
+            "problemas": []
+          }
+        },
+        {
+          "numero": 11,
+          "resumenCapitulo": "Sofía y Avispón Fernández se enfrentan a la interferencia de la familia Reina Abeja, que busca separarlos y exponer su matrimonio como una farsa. Mientras tanto, Avispa Dorada sigue siendo una aliada clave para Sofía en su lucha por mantener su relación y descubrir la verdad sobre la herencia de la empresa.",
+          "cliffhangerCierre": "Sofía descubre un comprobante de que la familia Reina Abeja está detrás de una campaña para dañar la reputación de Avispón Fernández y la empresa",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep11",
+          "generadoEn": "2026-08-05T01:26:13.574Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente de manera satisfactoria, solo lo continúa sin aportar nuevas revelaciones significativas.",
+              "No se observan acciones contradictorias de los personajes con respecto a sus roles o personalidades establecidos.",
+              "No se encuentran hechos que contradigan directamente la sinopsis o el resumen acumulado, pero el capítulo parece no avanzar significativamente en la trama."
+            ]
+          }
+        },
+        {
+          "numero": 12,
+          "resumenCapitulo": "Sofía descubre que la familia Reina Abeja está detrás de una campaña para dañar la reputación de Avispón Fernández y la empresa. La relación entre Sofía y Avispón se vuelve más tensa debido a la interferencia de la familia Reina Abeja. Avispa Dorada sigue apoyando a Sofía en su lucha por descubrir la verdad.",
+          "cliffhangerCierre": "La familia Reina Abeja planea una reunión con los inversionistas de la empresa para exponer a Avispón Fernández y su matrimonio con Sofía",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep12",
+          "generadoEn": "2026-08-05T01:37:08.173Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente de manera explícita, aunque continúa la trama relacionada con la interferencia de la familia Reina Abeja.",
+              "No se observan contradicciones significativas en la personalidad o el rol de los personajes en este capítulo.",
+              "El capítulo se mantiene dentro de la trama y la sinopsis establecida, sin contradecir hechos previos de manera directa."
+            ]
+          }
+        },
+        {
+          "numero": 13,
+          "resumenCapitulo": "La familia Reina Abeja planea una reunión con los inversionistas de la empresa para exponer a Avispón Fernández y su matrimonio con Sofía. Sofía y Avispón Fernández intentan anticiparse a la situación y proteger su relación. La familia Reina Abeja sigue presionando y encontrando formas de dañar la reputación de Avispón Fernández.",
+          "cliffhangerCierre": "La reunión con los inversionistas se acerca y Sofía y Avispón Fernández deben encontrar una forma de protegerse a sí mismos y a su relación",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep13",
+          "generadoEn": "2026-08-05T01:46:22.151Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve el cliffhanger pendiente, ya que la reunión con los inversionistas sigue pendiente y no se llega a una conclusión sobre el resultado de la misma",
+              "No se presentan hechos que contradigan la sinopsis o el resumen acumulado, pero se repiten situaciones y diálogos similares sin avanzar significativamente en la trama",
+              "Los personajes actúan de manera coherente con sus roles y personalidades establecidas, pero no se exploran nuevas facetas de sus caracteres"
+            ]
+          }
+        },
+        {
+          "numero": 14,
+          "resumenCapitulo": "Sofía y Avispón Fernández se preparan para la reunión con los inversionistas, mientras la familia Reina Abeja intenta sabotear su relación. Avispón Fernández confía en Avispa Dorada para ayudar a Sofía a descubrir la verdad sobre la familia Reina Abeja.",
+          "cliffhangerCierre": "La reunión con los inversionistas está a punto de comenzar, y Sofía y Avispón Fernández no saben qué esperar",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep14",
+          "generadoEn": "2026-08-06T01:12:37.624Z",
+          "chequeoContinuidad": {
+            "ok": true,
+            "problemas": []
+          }
+        },
+        {
+          "numero": 15,
+          "resumenCapitulo": "La reunión con los inversionistas comienza y Sofía y Avispón Fernández enfrentan los ataques de la familia Reina Abeja. Avispón Fernández revela un secreto que cambia el curso de la reunión. La familia Reina Abeja intenta recuperar el control, pero Avispón Fernández tiene un plan.",
+          "cliffhangerCierre": "La familia Reina Abeja intenta recuperar el control, pero Avispón Fernández tiene un plan que podría cambiar el curso de la empresa y su relación con Sofía.",
+          "guion": "avispanovela-la-uni-n-de-las-avispas-ep15",
+          "generadoEn": "2026-08-06T01:31:40.551Z",
+          "chequeoContinuidad": {
+            "ok": false,
+            "problemas": [
+              "El capítulo no resuelve de manera consistente el cliffhanger pendiente sobre la reunión con los inversionistas, ya que introduce un giro inesperado con la mención del hijo como heredero sin conexión clara con el resumen acumulado.",
+              "Avispón Fernández actúa de forma contradictoria al revelar que se casó por amor, lo que contradice la sinopsis y el resumen acumulado que establecen que el matrimonio fue por conveniencia.",
+              "La mención del hijo como el verdadero heredero de la empresa parece contradecir la sinopsis que menciona el hijo secreto de Avispón con una mujer de la familia Reina Abeja, pero no se desarrolla de manera coherente en el capítulo."
             ]
           }
         }

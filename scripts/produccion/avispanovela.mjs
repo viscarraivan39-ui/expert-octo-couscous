@@ -23,11 +23,19 @@ const N_BEATS = 16; // ~1 cada 5 capítulos
 // avispanovela-ep1.mjs— en la protagonista femenina de una serie nueva,
 // mientras el código le seguía asignando la voz masculina fija. Resultado:
 // voz de hombre sobre diálogo/imágenes escritos en femenino).
+// descripcionVisual: ANCLA fija de apariencia, no de rol — sin esto, cada
+// imagen de un personaje se generaba de cero con solo su nombre, así que
+// FLUX inventaba colores/forma distintos cada vez (bug real reportado por
+// varios espectadores: "no sabemos cuál es cuál", cambia de capítulo a
+// capítulo). Se inyecta por CÓDIGO en cada imagenPrompt (ver
+// personajeDescripcionVisual + escribirGuionMjs), nunca dependiendo de que
+// el LLM se acuerde de repetirla solo — mismo criterio que ya se usaba para
+// blindar las voces (asignarVoz), aplicado ahora a lo visual.
 const ELENCO_BASE = {
-  "Avispón Fernández": { voz: "es-US-Chirp3-HD-Fenrir", genero: "masculino", descripcionFija: "un avispón, empresario/heredero" },
-  "Avispa Dorada": { voz: "es-US-Chirp3-HD-Laomedeia", genero: "femenino", descripcionFija: "una avispa dorada" },
-  "Reina Abeja": { voz: "es-US-Chirp3-HD-Zephyr", genero: "femenino", descripcionFija: "una abeja reina, con presencia" },
-  "Libélula Montenegro": { voz: "es-US-Chirp3-HD-Leda", genero: "femenino", descripcionFija: "una libélula" },
+  "Avispón Fernández": { voz: "es-US-Chirp3-HD-Fenrir", genero: "masculino", descripcionFija: "un avispón, empresario/heredero", descripcionVisual: "tall anthropomorphic wasp man, sleek black and yellow striped exoskeleton, sharp business suit in dark navy, slicked-back dark hair, confident angular jaw" },
+  "Avispa Dorada": { voz: "es-US-Chirp3-HD-Laomedeia", genero: "femenino", descripcionFija: "una avispa dorada", descripcionVisual: "anthropomorphic wasp woman, golden-yellow and black striped exoskeleton with a metallic golden sheen, sleek professional blazer in cream, short elegant antennae, warm amber eyes" },
+  "Reina Abeja": { voz: "es-US-Chirp3-HD-Zephyr", genero: "femenino", descripcionFija: "una abeja reina, con presencia", descripcionVisual: "regal anthropomorphic queen bee woman, deep amber and black striped exoskeleton, ornate dark purple gown, golden crown-shaped antennae, imposing sharp posture" },
+  "Libélula Montenegro": { voz: "es-US-Chirp3-HD-Leda", genero: "femenino", descripcionFija: "una libélula", descripcionVisual: "anthropomorphic dragonfly woman, iridescent teal-blue translucent wings, slender build, dark emerald green fitted outfit, large luminous eyes" },
 };
 // Las 6 voces Chirp 3 HD aprobadas por el usuario. Antes solo 2 (ambas
 // masculinas: Puck, Sadachbia) quedaban "libres para nuevos", porque las
@@ -107,7 +115,7 @@ Usalos con moderación: como mucho 1 efecto por capítulo, y solo si el momento 
 
 function descripcionElencoBase() {
   return Object.entries(ELENCO_BASE)
-    .map(([nombre, d]) => `${nombre} (${d.genero}, ${d.descripcionFija})`)
+    .map(([nombre, d]) => `${nombre} (${d.genero}, ${d.descripcionFija}; descripcionVisual: "${d.descripcionVisual}")`)
     .join("; ");
 }
 
@@ -127,10 +135,11 @@ Devolvé SOLO un JSON válido (sin markdown), con esta forma exacta:
 {
   "titulo": "título de la serie, tipo 'La Heredera Secreta de Avispateya' o similar, sin copiar títulos reales de ReelShort/DramaBox",
   "sinopsis": "la historia completa de principio a fin en 5-8 frases, incluyendo el giro final",
-  "personajes": [{"nombre": "...", "rol": "...", "personalidad": "1 frase"}],
+  "personajes": [{"nombre": "...", "rol": "...", "personalidad": "1 frase", "descripcionVisual": "en inglés, apariencia FÍSICA concreta y reusable: color/patrón del exoesqueleto, tipo de cuerpo, un accesorio o rasgo distintivo — NO repitas rol/personalidad acá, esto es solo lo visual, va a inyectarse literal en cada imagen de este personaje durante toda la temporada"}],
   "beats": [{"capitulos": "1-5", "resumen": "qué avanza en ese tramo"}]
 }
-- "beats" tiene que tener EXACTAMENTE 16 elementos, cubriendo capítulos 1-5, 6-10, 11-15, ..., 76-80.`;
+- "beats" tiene que tener EXACTAMENTE 16 elementos, cubriendo capítulos 1-5, 6-10, 11-15, ..., 76-80.
+- Para personajes del elenco recurrente que uses (Avispón Fernández, etc.), copiá su descripcionVisual EXACTA de la lista de arriba, no inventes una nueva.`;
 }
 
 function beatDeCapitulo(serie, numero) {
@@ -170,7 +179,7 @@ Devolvé SOLO un JSON válido (sin markdown):
   "resumenCapitulo": "2-3 frases de qué pasó en este capítulo",
   "resumenAcumuladoActualizado": "el resumen acumulado de TODA la historia hasta este capítulo incluido, actualizado, en no más de 8 frases (reemplaza al anterior, no lo repitas completo)",
   "cliffhangerCierre": "qué queda sin resolver al final de este capítulo",
-  "personajesNuevos": ["nombres de personajes nuevos introducidos, si los hay"],
+  "personajesNuevos": [{"nombre": "...", "descripcionVisual": "en inglés, apariencia física concreta (ver formato de personajes en la biblia) — solo si este capítulo introduce a alguien que no estaba en la lista de 'Personajes ya establecidos'"}],
   "bloques": [{"id": "bloque1", "dialogo": [{"texto": "...", "personaje": "Nombre"}], "imagenPrompt": "en inglés", "keyword": "texto corto o null", "efecto": null}]
 }
 - "efecto" en el bloque donde tenga sentido: {"archivo": "zumbido_picada.mp3", "enSegundo": 0.3} (segundo dentro de ESE bloque), o null en el resto.`;
@@ -192,20 +201,63 @@ Verificá: ¿el capítulo resuelve o continúa el cliffhanger pendiente (no lo i
 Devolvé SOLO un JSON: {"ok": true/false, "problemas": ["lista de problemas concretos, vacía si ok"]}`;
 }
 
+// Busca la descripción visual fija de un personaje: elenco base primero
+// (siempre gana, nunca la pisa una nueva), después lo que quedó guardado en
+// serie.personajes (nuevos de esta serie). null si de verdad no se encuentra
+// (personaje mal escrito por el LLM) — en ese caso no se inyecta nada extra,
+// mejor que reventar el capítulo.
+function personajeDescripcionVisual(serie, nombre) {
+  const base = buscarEnElencoBase(nombre);
+  if (base) return base.descripcionVisual;
+  const p = (serie.personajes || []).find((x) => x.nombre === nombre);
+  return p?.descripcionVisual || null;
+}
+
+// Seed determinístico por UN SOLO personaje (el principal del bloque) — antes
+// se hasheaba la combinación completa de personajes presentes, así que el
+// mismo personaje caía en un seed distinto según apareciera solo o
+// acompañado (bug real: "pequeñas percepciones de cambio de personaje"
+// reportado 2026-08-03 en ep7-9, con la descripcionVisual ya funcionando
+// pero el seed todavía inconsistente entre tomas solo/grupo del mismo
+// personaje). Ancla al personaje principal del bloque (primero que habla) y
+// deja que descripcionVisual, no el seed, cargue con la apariencia de los
+// personajes secundarios presentes.
+function seedDePersonaje(nombre) {
+  let hash = 0;
+  for (let i = 0; i < nombre.length; i++) {
+    hash = (hash * 31 + nombre.charCodeAt(i)) >>> 0;
+  }
+  return hash % 1e9;
+}
+
 function escribirGuionMjs(serie, numeroCapitulo, capitulo) {
   const bloquesTexto = capitulo.bloques
     .map((b) => {
+      const nombresEnBloque = [...new Set(b.dialogo.map((l) => l.personaje))];
       const dialogo = b.dialogo
         .map((l) => {
           const voz = asignarVoz(serie, l.personaje);
           return `      { texto: \`${String(l.texto).replace(/`/g, "'")}\`, voz: "${voz}" } /* ${l.personaje} */`;
         })
         .join(",\n");
-      const prompt = `${b.imagenPrompt}, anthropomorphic insect with human-like body and expressive eyes, ${ESTILO}`.replace(/`/g, "'");
+      // Descripciones visuales fijas de cada personaje presente en el
+      // bloque, inyectadas por CÓDIGO (no depende de que el LLM se acuerde
+      // de repetirlas) — es el fix real al bug de "no sabemos cuál es cuál"
+      // entre capítulos, ver investigación 2026-08-03. Van AL PRINCIPIO del
+      // prompt, antes de la acción de la escena — los tokens más tempranos
+      // pesan más en la adherencia de FLUX al prompt (feedback 2026-08-03:
+      // con la descripción al final todavía se notaban cambios chicos de
+      // identidad).
+      const descripciones = nombresEnBloque
+        .map((n) => personajeDescripcionVisual(serie, n))
+        .filter(Boolean)
+        .join(", ");
+      const prompt = `${descripciones ? `${descripciones}, ` : ""}${b.imagenPrompt}, anthropomorphic insect with human-like body and expressive eyes, ${ESTILO}`.replace(/`/g, "'");
       const keyword = b.keyword && b.keyword !== "null" ? `"${String(b.keyword).replace(/"/g, "'")}"` : "null";
       const efectoLinea = b.efecto && b.efecto.archivo
         ? `\n    efecto: { archivo: "${b.efecto.archivo}", enSegundo: ${Number(b.efecto.enSegundo) || 0} },`
         : "";
+      const seed = seedDePersonaje(nombresEnBloque[0] || "");
       return `  {
     id: "${b.id}",
     dialogo: [
@@ -213,6 +265,7 @@ ${dialogo}
     ],
     imagenPrompt: \`${prompt}\`,
     keyword: ${keyword},${efectoLinea}
+    seedPersonajes: ${seed},
   }`;
     })
     .join(",\n");
@@ -232,12 +285,28 @@ ${bloquesTexto},
   return { idGuion, outPath };
 }
 
+// Garantiza que todo personaje quede con descripcionVisual — para el elenco
+// base, SIEMPRE la fija de ELENCO_BASE (nunca la que haya escrito el LLM, por
+// si la alteró); para personajes nuevos, la que devolvió el LLM, o una de
+// respaldo genérica pero al menos consistente si vino vacía.
+function normalizarPersonajes(personajes) {
+  return (personajes || []).map((p) => {
+    const base = buscarEnElencoBase(p.nombre);
+    if (base) return { ...p, descripcionVisual: base.descripcionVisual };
+    return {
+      ...p,
+      descripcionVisual: p.descripcionVisual || `anthropomorphic insect character named ${p.nombre}, consistent distinct silhouette and color palette`,
+    };
+  });
+}
+
 async function crearSerie(idea) {
   console.log(`Armando la biblia de la temporada a partir de: "${idea}"...`);
   const biblia = await pedirJSON(promptBiblia(idea));
   if (!biblia.beats || biblia.beats.length !== N_BEATS) {
     console.log(`   ⚠ el modelo devolvió ${biblia.beats?.length ?? 0} beats en vez de ${N_BEATS} — se usa igual, puede quedar desparejo.`);
   }
+  biblia.personajes = normalizarPersonajes(biblia.personajes);
 
   const serie = {
     titulo: biblia.titulo,
@@ -288,6 +357,32 @@ async function generarCapitulo(serie, estado) {
   const cliffhangerPendiente = serie.capitulos.length ? serie.capitulos[serie.capitulos.length - 1].cliffhangerCierre : null;
 
   const capitulo = await pedirJSON(promptCapitulo(serie, numero));
+
+  // Guardia contra respuestas truncadas por max_tokens (bug real 2026-08-04:
+  // la respuesta se cortaba a mitad de un bloque y el parser de respaldo de
+  // pedirJSON armaba igual un JSON "válido" pero con bloques finales vacíos o
+  // duplicados — el guion se escribía corrupto y recién reventaba ffmpeg en
+  // el render, mucho después y lejos del error real). Mejor fallar acá,
+  // fuerte y temprano, que generar un .mjs corrupto.
+  if (!Array.isArray(capitulo.bloques) || capitulo.bloques.length === 0) {
+    throw new Error(`Respuesta del modelo sin bloques (probable truncamiento) — no se escribe el guion del capítulo ${numero}.`);
+  }
+  const bloqueVacio = capitulo.bloques.find((b) => !Array.isArray(b.dialogo) || b.dialogo.length === 0);
+  if (bloqueVacio) {
+    throw new Error(`Bloque "${bloqueVacio.id}" del capítulo ${numero} vino sin diálogo (probable truncamiento de la respuesta) — no se escribe el guion.`);
+  }
+
+  // Registrar la descripción visual de personajes nuevos introducidos en
+  // ESTE capítulo, ANTES de escribir el guion — si no, la primera aparición
+  // del personaje (justo este capítulo) queda sin ancla visual, que es
+  // cuando más importa tenerla.
+  if (Array.isArray(capitulo.personajesNuevos)) {
+    for (const nuevo of capitulo.personajesNuevos) {
+      if (!nuevo?.nombre || serie.personajes.some((p) => p.nombre === nuevo.nombre)) continue;
+      serie.personajes.push(...normalizarPersonajes([{ nombre: nuevo.nombre, rol: "", personalidad: "", descripcionVisual: nuevo.descripcionVisual }]));
+      console.log(`   + personaje nuevo registrado con descripción visual fija: ${nuevo.nombre}`);
+    }
+  }
 
   let chequeo = { ok: true, problemas: [] };
   if (numero === 1) {

@@ -4,9 +4,18 @@
 // ffmpeg (zoompan, subtítulos, crossfade, viñeta/grano, marca de agua) -> video.
 
 import { MsEdgeTTS, OUTPUT_FORMAT } from "msedge-tts";
-import { writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync, readdirSync, renameSync } from "node:fs";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+
+// Carga NVIDIA_API_KEY / GOOGLE_TTS_API_KEY desde .env (junto a este archivo,
+// no versionado) si existe — así las claves quedan guardadas en disco una
+// sola vez en vez de tener que pasarlas de nuevo en cada sesión de terminal.
+try {
+  process.loadEnvFile(new URL("./.env", import.meta.url));
+} catch {
+  // sin .env: seguir con las variables de entorno ya presentes en el shell
+}
 
 const run = promisify(execFile);
 // Voz por defecto para narrador único: Edge TTS (Catalina), NO Google Chirp
@@ -124,8 +133,34 @@ async function sintetizarLinea(texto, voz, path, intento = 0) {
   }
 }
 
+// Efecto "ardilla" (voz aguda tipo Chipmunks) sobre un mp3 ya sintetizado.
+// No existe como voz de TTS (el rango de pitch de Edge/Google TTS no llega a
+// tanto) — se logra en post con asetrate (sube pitch+velocidad juntos) y
+// atempo compensando parte de la velocidad para que no quede irreconocible.
+async function aplicarEfectoArdilla(path) {
+  const tmp = path.replace(/\.mp3$/, "_ardilla.mp3");
+  await run("ffmpeg", [
+    "-y", "-i", path,
+    // 1.5x/0.85 (probado primero) resultó ininteligible — feedback real:
+    // "no se entiende nada". 1.2x/0.92 da un pitch notoriamente más agudo
+    // sin destruir la articulación de las palabras.
+    "-filter:a", "asetrate=44100*1.2,aresample=44100,atempo=0.92",
+    tmp,
+  ]);
+  renameSync(tmp, path);
+  return path;
+}
+
+// bloque.efectoVoz = "ardilla" aplica el efecto sobre la línea completa del
+// narrador único. Para diálogo multi-personaje, ver linea.efectoVoz en
+// generarAudioDialogo (permite que solo uno de los personajes suene así).
+// bloque.voz (opcional): override puntual del narrador único para todo el
+// guion (ej. es-CL-LorenzoNeural para el segmento de consejos financieros,
+// más serio que la Catalina por defecto) — si no viene, se usa VOICE.
 async function generarAudio(bloque) {
-  return sintetizarLinea(bloque.texto, VOICE, `${DIR}/${bloque.id}.mp3`);
+  const path = await sintetizarLinea(bloque.texto, bloque.voz || VOICE, `${DIR}/${bloque.id}.mp3`);
+  if (bloque.efectoVoz === "ardilla") await aplicarEfectoArdilla(path);
+  return path;
 }
 
 // Diálogo multi-personaje: bloque.dialogo = [{ texto, voz }, ...]. Cada línea
@@ -139,6 +174,7 @@ async function generarAudioDialogo(bloque) {
     const linea = bloque.dialogo[i];
     const nombreArchivo = `${bloque.id}_linea${i}.mp3`;
     await sintetizarLinea(linea.texto, linea.voz || VOICE, `${DIR}/${nombreArchivo}`);
+    if (linea.efectoVoz === "ardilla") await aplicarEfectoArdilla(`${DIR}/${nombreArchivo}`);
     const dur = await duracionSegundos(`${DIR}/${nombreArchivo}`);
     partes.push({ texto: linea.texto, nombreArchivo, duracion: dur });
   }
@@ -175,27 +211,52 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
 const FLUX_URL = "https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-dev";
-// Prompt de respaldo comprobado como seguro (no dispara CONTENT_FILTERED) para
-// cuando el prompt real se bloquea repetidamente y no vale la pena tirar abajo
-// todo el render por eso — mejor una imagen genérica que cero imagen.
-const PROMPT_RESPALDO = "Empty stadium under dramatic lighting, photorealistic, vertical composition";
+// Prompts de respaldo comprobados como seguros (no disparan CONTENT_FILTERED)
+// para cuando el prompt real se bloquea repetidamente y no vale la pena tirar
+// abajo todo el render por eso — mejor una imagen genérica que cero imagen.
+// Varios por categoría (elegidos al azar en cada falla) — con un solo prompt
+// fijo, cada toma que cae a respaldo terminaba siendo literalmente la misma
+// imagen repetida en todo el video (y entre videos distintos).
+const PROMPTS_RESPALDO = [
+  "Empty stadium under dramatic lighting, photorealistic, vertical composition",
+  "Empty city street at dusk with warm streetlights, photorealistic, vertical composition",
+  "Cozy living room interior with soft afternoon light, no people, photorealistic, vertical composition",
+  "Rain droplets on a window with blurred city lights behind, photorealistic, vertical composition",
+  "Stack of newspapers on a wooden table, dramatic side lighting, photorealistic, vertical composition",
+];
 // Si el prompt que falló era estilo cómic, el respaldo tiene que serlo
 // también — si no, la imagen genérica fotorrealista queda pegada en medio
 // de un video de dibujos animados y se nota muchísimo.
-const PROMPT_RESPALDO_COMIC = "A cheerful empty stage with spotlights, colorful comic book illustration style, bold outlines, flat vibrant colors, vertical composition";
+const PROMPTS_RESPALDO_COMIC = [
+  "A cheerful empty stage with spotlights, colorful comic book illustration style, bold outlines, flat vibrant colors, vertical composition",
+  "A cozy comic book illustration of an empty living room, bold outlines, flat vibrant colors, vertical composition",
+  "A comic book illustration of a city street at dusk, bold outlines, flat vibrant colors, no people, vertical composition",
+];
 // Respaldo para tomas de "Avispanovela" (insectos antropomorfizados) — el
 // respaldo genérico de estadio quedaba totalmente fuera de tema pegado en
 // medio de un video de personajes-insecto, se notaba tanto como el corte de
 // contenido que se supone tenía que disimular.
-const PROMPT_RESPALDO_INSECTO = "Close-up of an elegant golden honeycomb texture with dramatic warm lighting and soft shadows, no people, photorealistic, vertical composition";
+const PROMPTS_RESPALDO_INSECTO = [
+  "Close-up of an elegant golden honeycomb texture with dramatic warm lighting and soft shadows, no people, photorealistic, vertical composition",
+  "Close-up of dew drops on a flower petal with soft bokeh background, photorealistic, vertical composition",
+  "Sunlit forest clearing with tall grass, no people, photorealistic, vertical composition",
+];
 // Último recurso: ni siquiera el respaldo es 100% infalible (el filtro de
 // FLUX no es determinístico — el mismo prompt puede pasar una vez y
 // bloquearse otra) — sin personas ni escenas, imposible de asociar a nada.
-const PROMPT_RESPALDO_MINIMO = "Abstract colorful shapes and soft gradient background, no people, no text, vertical composition";
-const PROMPT_RESPALDO_MINIMO_COMIC = "Abstract colorful comic book style shapes and bold patterns, no people, no text, vertical composition";
+const PROMPTS_RESPALDO_MINIMO = [
+  "Abstract colorful shapes and soft gradient background, no people, no text, vertical composition",
+  "Abstract soft-focus bokeh lights on a dark background, no people, no text, vertical composition",
+  "Abstract flowing liquid gradient in warm tones, no people, no text, vertical composition",
+];
+const PROMPTS_RESPALDO_MINIMO_COMIC = [
+  "Abstract colorful comic book style shapes and bold patterns, no people, no text, vertical composition",
+  "Abstract comic book style halftone dots and bold color blocks, no people, no text, vertical composition",
+];
+const elegir = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-async function llamarFlux(prompt) {
-  const seed = Math.floor(Math.random() * 1e9);
+async function llamarFlux(prompt, seedFijo) {
+  const seed = seedFijo ?? Math.floor(Math.random() * 1e9);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 60000);
   const resp = await fetch(FLUX_URL, {
@@ -230,16 +291,22 @@ async function llamarFlux(prompt) {
   return art.base64;
 }
 
-async function descargarImagen(prompt, path, intento = 0) {
+// seedFijo (opcional): mismo seed para todas las tomas de un mismo personaje
+// o combinación de personajes — junto con la descripción visual fija
+// inyectada en el prompt (ver personajeDescripcionVisual en avispanovela.mjs),
+// es la segunda capa del parche de consistencia: no reemplaza una imagen de
+// referencia real (no disponible gratis, ver investigación 2026-08-03), pero
+// reduce la varianza de color/proporciones entre tomas del mismo personaje.
+async function descargarImagen(prompt, path, intento = 0, seedFijo) {
   if (!NVIDIA_API_KEY) throw new Error("Falta NVIDIA_API_KEY en el entorno");
   try {
-    const base64 = await llamarFlux(prompt);
+    const base64 = await llamarFlux(prompt, seedFijo);
     writeFileSync(path, Buffer.from(base64, "base64"));
     return path;
   } catch (err) {
     if (intento < 3) {
       await sleep(4000 * (intento + 1));
-      return descargarImagen(prompt, path, intento + 1);
+      return descargarImagen(prompt, path, intento + 1, seedFijo);
     }
     // Cualquier falla persistente (filtro de contenido, timeout de red, 5xx
     // transitorio de NVIDIA) cae al respaldo — mejor una imagen genérica que
@@ -248,14 +315,14 @@ async function descargarImagen(prompt, path, intento = 0) {
     const esComic = /comic book illustration style/i.test(prompt);
     const esInsecto = /anthropomorphic insect/i.test(prompt);
     try {
-      const respaldo = esComic ? PROMPT_RESPALDO_COMIC : esInsecto ? PROMPT_RESPALDO_INSECTO : PROMPT_RESPALDO;
+      const respaldo = elegir(esComic ? PROMPTS_RESPALDO_COMIC : esInsecto ? PROMPTS_RESPALDO_INSECTO : PROMPTS_RESPALDO);
       const base64 = await llamarFlux(respaldo);
       writeFileSync(path, Buffer.from(base64, "base64"));
       return path;
     } catch (err2) {
       console.log(`      ⚠ hasta el respaldo falló, usando respaldo mínimo (abstracto) para ${path}`);
       try {
-        const base64 = await llamarFlux(esComic ? PROMPT_RESPALDO_MINIMO_COMIC : PROMPT_RESPALDO_MINIMO);
+        const base64 = await llamarFlux(elegir(esComic ? PROMPTS_RESPALDO_MINIMO_COMIC : PROMPTS_RESPALDO_MINIMO));
         writeFileSync(path, Buffer.from(base64, "base64"));
         return path;
       } catch (err3) {
@@ -548,7 +615,9 @@ async function procesarBloque(bloque) {
       duracionesSub.map((_, i) =>
         limitImg(() => descargarImagen(
           `${bloque.imagenPrompt}, ${angulos[i % angulos.length]}`,
-          `${DIR}/${bloque.id}_img${i}.jpg`
+          `${DIR}/${bloque.id}_img${i}.jpg`,
+          0,
+          bloque.seedPersonajes
         ))
       )
     );

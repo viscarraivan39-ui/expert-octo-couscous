@@ -22,7 +22,13 @@ async function llamarGroq(prompt) {
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
-      max_tokens: 2500,
+      // 2500 se quedaba corto para un capítulo de 10-16 bloques (cada uno con
+      // diálogo + imagenPrompt de ~60-80 palabras) más los campos de
+      // continuidad — la respuesta se cortaba a mitad de un bloque, y el
+      // parser de respaldo de parseJson() arma igual un JSON "válido" pero
+      // con los últimos bloques vacíos/duplicados (bug real: ep11 salió con
+      // bloques 13-14 con dialogo:[] vacío por esto, detectado 2026-08-04).
+      max_tokens: 6000,
       temperature: 0.9,
     }),
   });
@@ -41,7 +47,13 @@ async function llamarNvidia(prompt) {
       model: "meta/llama-3.3-70b-instruct",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.9,
-      max_tokens: 2500,
+      // 2500 se quedaba corto para un capítulo de 10-16 bloques (cada uno con
+      // diálogo + imagenPrompt de ~60-80 palabras) más los campos de
+      // continuidad — la respuesta se cortaba a mitad de un bloque, y el
+      // parser de respaldo de parseJson() arma igual un JSON "válido" pero
+      // con los últimos bloques vacíos/duplicados (bug real: ep11 salió con
+      // bloques 13-14 con dialogo:[] vacío por esto, detectado 2026-08-04).
+      max_tokens: 6000,
     }),
   });
   if (!resp.ok) throw new Error(`NVIDIA NIM HTTP ${resp.status}: ${await resp.text()}`);
