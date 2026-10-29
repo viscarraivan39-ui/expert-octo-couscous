@@ -3,6 +3,15 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-10-29
+- **Sync catálogo manual** (`a0014e9`): se comparó la hoja de Google Sheets contra
+  `data/productos.json` (57 productos en ambos, mismo orden y mismos campos).
+  Único cambio real: el link de afiliado de "Freidora Electrica Eoland" en la
+  hoja es `meli.la/1cjZa1X`, no `meli.la/1ciZa1X` como había quedado del sync
+  del 27-10. Se corrigió para que vuelva a coincidir con la hoja (si esto se
+  repite, puede que el campo de la hoja esté oscilando entre dos valores por
+  error de tipeo de Iván — vale la pena que lo revise).
+
 ## 2026-10-27
 - **Sync catálogo manual** (`5ab1ea7`): se comparó la hoja de Google Sheets contra
   `data/productos.json` (57 productos en ambos, mismo orden). Único cambio real: el

@@ -5,6 +5,26 @@ Agregar nuevos arriba, con el número siguiente. No borrar entradas viejas.
 
 ---
 
+### BUG-008 — Instrucción de sync de catálogo desactualizada (2026-10-29)
+- **Síntoma:** la tarea programada de sync de catálogo pide editar un array
+  `PRODUCTS_CHILE_MANUAL` hardcodeado dentro de `index.html`, pero ese array
+  ya no existe ahí (se movió a `data/productos.json` el 2026-10-27; en
+  `index.html` solo queda `let PRODUCTS_CHILE_MANUAL = [];` que se llena con
+  `fetch('/data/productos.json')`).
+- **Causa:** la instrucción de la tarea programada no se actualizó cuando se
+  hizo el refactor.
+- **Arreglo:** el sync de catálogo (manual o automático) edita
+  `data/productos.json`, nunca `index.html`.
+- **No reintroducir:** no volver a poner el catálogo hardcodeado dentro de
+  `index.html`. Si una instrucción de sync menciona `PRODUCTS_CHILE_MANUAL`
+  "dentro del script de index.html", tratarlo como desactualizado y
+  sincronizar `data/productos.json` igual.
+- **Nota aparte:** en este mismo sync, el link de afiliado de "Freidora
+  Electrica Eoland" en la hoja volvió a aparecer como `meli.la/1cjZa1X`
+  después de que el 2026-10-27 se había "corregido" a `meli.la/1ciZa1X`. Puede
+  ser que Iván esté alternando entre los dos por error de tipeo — si vuelve a
+  cambiar, vale la pena preguntarle cuál es el link real en vez de asumir.
+
 ### BUG-007 — Código fuente descargable desde el sitio (2026-09-29)
 - **Síntoma:** `/lib/*.js` y `/scripts/*` respondían 200: cualquiera podía leer prompts, lógica de crons y una copia vieja de las claves de las guías de Profe Emi (`scripts/guias/claves-m1.mjs`).
 - **Causa:** Vercel sirve como archivo estático todo lo que está en la raíz del repo.
