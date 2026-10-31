@@ -3,6 +3,13 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-10-31
+- **Sync catálogo manual** (sin commit): se comparó la hoja de Google Sheets contra
+  `data/productos.json` (57 productos en ambos, mismo orden, mismos campos). No hubo cambios
+  reales que sincronizar, así que no se tocó el archivo ni se hizo commit (BUG-009: dos nombres
+  parecían distintos por un glitch de codificación en la exportación CSV de la hoja, no por un
+  cambio real — se descartó cruzando con otra lectura de la misma hoja).
+
 ## 2026-10-29
 - **Sync catálogo manual** (`a0014e9`): se comparó la hoja de Google Sheets contra
   `data/productos.json` (57 productos en ambos, mismo orden y mismos campos).

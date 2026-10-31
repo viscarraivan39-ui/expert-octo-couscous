@@ -5,6 +5,24 @@ Agregar nuevos arriba, con el número siguiente. No borrar entradas viejas.
 
 ---
 
+### BUG-009 — Falso positivo de cambio al sincronizar catálogo (2026-10-31)
+- **Síntoma:** al leer la hoja con `download_file_content` (exportada a CSV), dos nombres de
+  producto salieron con tildes rotas ("Inlalámbrico" en vez de "Inalámbrico", "Electrico" sin
+  tilde en vez de "Eléctrico"), lo que parecía indicar que esos dos productos habían cambiado
+  de nombre en la hoja.
+- **Causa:** no fue un cambio real en la hoja, sino un glitch de codificación puntual en esa
+  exportación CSV de Google Drive (el resto de las ~50 palabras con tilde del mismo archivo
+  decodificaron bien). Se confirmó comparando con `read_file_content` (la vista en texto plano
+  de la misma hoja), que mostró los nombres correctos, iguales a los que ya estaban en
+  `data/productos.json`.
+- **Arreglo:** no se tocó nada — una vez descartado el glitch, los 57 productos de la hoja
+  coincidían 1:1 (mismo orden, mismos campos) con `data/productos.json`, así que no había nada
+  que sincronizar.
+- **No reintroducir:** si al comparar la hoja contra `data/productos.json` aparece una diferencia
+  rara que solo afecta tildes/acentos en uno o dos nombres (y no al resto del archivo), no asumir
+  que es un cambio real del dueño. Cruzar con `read_file_content` (u otra forma de leer la hoja)
+  antes de reescribir el catálogo o reportarlo como cambio.
+
 ### BUG-008 — Instrucción de sync de catálogo desactualizada (2026-10-29)
 - **Síntoma:** la tarea programada de sync de catálogo pide editar un array
   `PRODUCTS_CHILE_MANUAL` hardcodeado dentro de `index.html`, pero ese array
