@@ -3,6 +3,16 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-11-01
+- **Sync catálogo manual** (sin cambios en el catálogo): se comparó la hoja de Google Sheets
+  contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos). No hubo
+  cambios reales que sincronizar. Se verificó la hoja con `read_file_content` y cruzando con
+  `download_file_content` (CSV) para descartar glitches de codificación (BUG-009); esta vez
+  los acentos del CSV decodificaron bien.
+- **Nota:** la tarea programada de sync todavía trae en su prompt la instrucción vieja de editar
+  `PRODUCTS_CHILE_MANUAL` dentro de `index.html` (BUG-008, ya documentado). Se siguió la regla
+  ya vigente: se comparó contra `data/productos.json`, no contra `index.html`.
+
 ## 2026-10-31
 - **Sync catálogo manual** (sin commit): se comparó la hoja de Google Sheets contra
   `data/productos.json` (57 productos en ambos, mismo orden, mismos campos). No hubo cambios
