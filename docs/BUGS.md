@@ -5,6 +5,24 @@ Agregar nuevos arriba, con el número siguiente. No borrar entradas viejas.
 
 ---
 
+### BUG-010 — Transcripción manual de CSV en base64 mete errores de un carácter (2026-11-03)
+- **Síntoma:** al sincronizar el catálogo, 3 links de afiliado y 1 nombre de producto salieron
+  "distintos" entre la hoja y `data/productos.json` (ej. `1cjZa1X` vs `1ciZa1X`, `1ZwJN8X` vs
+  `1zwJN8X`, `2SHfgLV` vs `2SHfgLW`), lo que parecía indicar 3 cambios reales en la hoja.
+- **Causa:** `download_file_content` devuelve el CSV como base64; para decodificarlo hubo que
+  copiar ese base64 a mano a un archivo (el resultado del tool no se puede volcar directo a disco),
+  y esa transcripción manual de un blob largo metió 3 errores de un carácter. Un cuarto caso
+  ("Inalámbrico" → "Inlámbrico") sí fue el glitch real de exportación CSV de BUG-009.
+- **Arreglo:** se cruzaron los 4 casos con `search_files` (que trae un snippet de texto plano de
+  toda la hoja, sin pasar por base64) y se confirmó que `data/productos.json` ya coincidía con la
+  hoja real; no se tocó nada.
+- **No reintroducir:** cuando haya que decodificar un `download_file_content` en base64 a mano,
+  no confiar en una sola transcripción larga. Cualquier "diferencia" encontrada entre la hoja y
+  `data/productos.json` se cruza con `read_file_content` o `search_files` (ambos devuelven texto,
+  no base64) antes de reescribir el catálogo o reportarla como cambio real — la transcripción
+  manual de blobs largos es en sí misma una fuente de falsos positivos, además del glitch de
+  codificación ya documentado en BUG-009.
+
 ### BUG-009 — Falso positivo de cambio al sincronizar catálogo (2026-10-31)
 - **Síntoma:** al leer la hoja con `download_file_content` (exportada a CSV), dos nombres de
   producto salieron con tildes rotas ("Inlalámbrico" en vez de "Inalámbrico", "Electrico" sin

@@ -3,6 +3,27 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-11-03
+- **Sync catálogo manual** (sin cambios en el catálogo): se comparó la hoja de Google Sheets
+  contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos). No hubo
+  cambios reales que sincronizar.
+- **Nota:** la tarea programada de sync sigue traendo en su prompt la instrucción vieja de editar
+  `PRODUCTS_CHILE_MANUAL` dentro de `index.html` (BUG-008). Se siguió la regla ya vigente: se
+  comparó contra `data/productos.json`, no contra `index.html`.
+- **Nota BUG-009 (al cuadrado):** al leer la hoja con `download_file_content` (CSV en base64), tuve
+  que transcribir el base64 a mano a un archivo para decodificarlo, y esa transcripción manual
+  metió 3 errores de un carácter en 3 links de afiliado, más 1 error ya presente en la exportación
+  CSV de Drive en el nombre "Inalámbrico" → "Inlámbrico" (el glitch real de BUG-009). Los 4 casos
+  parecían "cambios" reales de la hoja. Se descartaron cruzando con `search_files` (snippet de
+  texto plano de la hoja completa, sin pasar por base64) y confirmando que los valores de
+  `data/productos.json` ya vigentes coincidían con la hoja real.
+- **No reintroducir:** si hay que decodificar un `download_file_content` en base64 a mano (sin
+  poder pasar el resultado del tool directamente a un archivo), no confiar en una sola
+  transcripción larga. Cruzar cualquier "diferencia" encontrada con `read_file_content` o
+  `search_files` (snippet de texto) antes de asumir que es un cambio real de la hoja — la
+  transcripción manual de blobs largos es, en sí misma, una fuente de falsos positivos además del
+  glitch de codificación de BUG-009.
+
 ## 2026-11-01
 - **Sync catálogo manual** (sin cambios en el catálogo): se comparó la hoja de Google Sheets
   contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos). No hubo
