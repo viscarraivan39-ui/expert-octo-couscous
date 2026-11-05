@@ -3,6 +3,20 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-11-05
+- **Sync catálogo manual** (sin cambios en el catálogo): se comparó la hoja de Google Sheets
+  contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos, incluido el
+  caso ya conocido del link de afiliado por `Destacado` en "Repetidor Wi-Fi TP-Link RE305"). No
+  hubo cambios reales que sincronizar.
+- **Nota:** la tarea programada de sync sigue traendo en su prompt la instrucción vieja de editar
+  `PRODUCTS_CHILE_MANUAL` dentro de `index.html` (BUG-008). Se siguió la regla ya vigente: se
+  comparó contra `data/productos.json`, no contra `index.html`.
+- **Nota de lectura:** `read_file_content` sobre la hoja solo trae una muestra truncada (~34 de
+  57 filas); se usó `search_files` (snippet de texto plano completo, sin pasar por base64, 7286
+  bytes = la hoja completa) para tener las 57 filas, cruzado campo por campo contra
+  `data/productos.json` para resolver nombres con comas incrustadas (ninguna fila nueva que
+  decodificar a mano, así que no aplicó el riesgo de BUG-010).
+
 ## 2026-11-03
 - **Sync catálogo manual** (sin cambios en el catálogo): se comparó la hoja de Google Sheets
   contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos). No hubo
