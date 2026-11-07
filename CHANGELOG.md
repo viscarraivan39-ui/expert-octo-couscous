@@ -3,6 +3,17 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-11-07
+- **Sync catálogo manual** (sin cambios en el catálogo): se leyó la hoja de Google Sheets con
+  `search_files` (snippet de texto plano completo, 7286 bytes, sin pasar por base64 — evita el
+  riesgo de BUG-010). `get_file_metadata` mostró `modifiedTime` y `fileSize` idénticos a los de
+  los syncs anteriores (sin tocar desde 2026-07-22), así que la hoja no cambió desde el último
+  sync del 2026-11-05. Se comparó igual contra `data/productos.json` (57 productos, mismo orden,
+  mismos campos) para confirmar. No hubo cambios reales que sincronizar.
+- **Nota:** la tarea programada de sync sigue traendo en su prompt la instrucción vieja de editar
+  `PRODUCTS_CHILE_MANUAL` dentro de `index.html` (BUG-008). Se siguió la regla ya vigente: se
+  comparó contra `data/productos.json`, no contra `index.html`.
+
 ## 2026-11-05
 - **Sync catálogo manual** (sin cambios en el catálogo): se comparó la hoja de Google Sheets
   contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos, incluido el
