@@ -3,6 +3,19 @@
 Historial de cambios: qué se cambió, cuándo y por qué. Lo más nuevo arriba.
 Lo actualiza la IA al cerrar cada sesión (ver `AGENTS.md`).
 
+## 2026-11-11
+- **Sync catálogo manual** (sin cambios en el catálogo): `get_file_metadata` mostró
+  `modifiedTime` (2026-07-22T21:28:14.675Z) y `fileSize` (7286 bytes) idénticos a los de todos
+  los syncs anteriores desde el 2026-10-31 — la hoja sigue sin tocarse desde esa fecha. Se cruzó
+  igual con `search_files` (snippet de texto plano completo, sin pasar por base64, evita BUG-010)
+  contra `data/productos.json` (57 productos en ambos, mismo orden, mismos campos, incluido el
+  caso ya conocido del link de afiliado por `Destacado` en "Secador De Pelo Siegen" y el link
+  `meli.la/1cjZa1X` de "Freidora Electrica Eoland"). No hubo cambios reales que sincronizar.
+- **Nota:** la tarea programada de sync sigue traendo en su prompt la instrucción vieja de editar
+  `PRODUCTS_CHILE_MANUAL` dentro de `index.html` (BUG-008). Se siguió la regla ya vigente: se
+  comparó contra `data/productos.json`, no contra `index.html` (que ya no tiene el array
+  hardcodeado).
+
 ## 2026-11-07
 - **Sync catálogo manual** (sin cambios en el catálogo): se leyó la hoja de Google Sheets con
   `search_files` (snippet de texto plano completo, 7286 bytes, sin pasar por base64 — evita el
